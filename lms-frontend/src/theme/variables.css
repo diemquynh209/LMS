@@ -1,0 +1,61 @@
+.bg-gradient-blue {
+  --ion-background-color: transparent; 
+  background: linear-gradient(135deg, #012a4a 0%, #0277bd 100%); /* Từ xanh navy cực đậm chuyển sang xanh dương */
+  height: 100%;
+}
+
+.glass-card {
+  margin: 15vh auto; 
+  width: 90%; 
+  max-width: 400px; 
+  background: rgba(255, 255, 255, 0.2); 
+  backdrop-filter: blur(12px); 
+  -webkit-backdrop-filter: blur(12px); 
+  border: 1px solid rgba(255, 255, 255, 0.4); 
+  border-radius: 20px; 
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); 
+  padding: 10px;
+}
+
+.glass-title {
+  color: #ffffff;
+  font-weight: 400;
+  font-size: 28px;
+  letter-spacing: 1px;
+}
+
+.glass-input-item {
+  --background: rgba(255, 255, 255, 0.15); 
+  --border-radius: 12px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.6); 
+  border-radius: 12px;
+}
+
+.glass-input-item ion-input {
+  color: #ffffff; 
+  --placeholder-color: rgba(255, 255, 255, 0.8);
+  --padding-start: 15px !important;
+  font-size: 18px; 
+  font-weight: 500; 
+  --caret-color:#ffffff !important;
+  caret-color: #ffffff !important;
+}
+
+.glass-input-item ion-input::part(native) {
+  caret-color: #ffffff !important;
+}
+
+.glass-input-item ion-input .native-input {
+  caret-color: #ffffff !important;
+}
+.glass-button {
+  --background: rgba(255, 255, 255, 0.3); 
+  --color: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: none;
+  
+  margin-top: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
