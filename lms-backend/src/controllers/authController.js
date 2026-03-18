@@ -1,6 +1,8 @@
 const bcrypt= require('bcrypt');
+const jwt = require('jsonwebtoken')
 const userModel = require('../models/userModel');
 const { json } = require('express');
+
 const registerUser = async(req,res)=>{
     const{full_name,email,password,invite_code}= req.body;
     if (!full_name||!email||!password){
@@ -36,8 +38,42 @@ const registerUser = async(req,res)=>{
         });
 
     } catch (error) {
-        console.error("Lỗi đăng ký:", error);
-        return res.status(500).json({ message: "Lỗi máy chủ!" });
+        console.error("Loi dang ky:", error);
+        return res.status(500).json({ message: "Loi he thong!" });
     }
     };
-module.exports={registerUser};
+
+const loginUser =async(req,res)=>{
+    const{email,password} = req.body;
+    if(!email||!password){
+        return res.status(400).json({message: "Vui long nhap email va mat khau"})
+    }
+    try{
+        const user= await userModel.findUserByEmail(email);
+        if(!user){
+            return res.status(400).json({message:"email hoac mat khau khong dung"})
+        }
+        const isMatch = await bcrypt.compare(password,user.password_hash);
+        if(!isMatch){
+            return res.status(400).json({message:"email hoac mat khau khong dung"})
+        }
+        const payload={
+            id: user.id,
+            role:user.role
+        };
+        const token =jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            {expiresIn:'1d'}
+        );
+        return res.status(200).json({
+            message:"Dang nhap thanh cong",
+            token: token,
+            user:{id:user.is, full_name:user.full_name, email:user.email, role:user.role}
+        });
+    }catch (error){
+        console.error("Loi dang nhap:", error);
+        return res.status(500).json({message:"Loi may chu"});
+    }
+};
+module.exports={registerUser,loginUser};
