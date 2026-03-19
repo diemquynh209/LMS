@@ -25,6 +25,10 @@ const Login: React.FC = () => {
       if (response.ok) {
         setToastMsg('🎉 Đăng nhập thành công!');
         localStorage.setItem('token', data.token); 
+        localStorage.setItem('user',JSON.stringify(data.user));
+        setTimeout(()=>{
+          history.push('/dashboard');
+        },1000);
       } else {
         setToastMsg('❌ ' + (data.message || 'Lỗi đăng nhập'));
       }
