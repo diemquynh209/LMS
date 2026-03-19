@@ -23,17 +23,17 @@ const Login: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setToastMsg('🎉 Đăng nhập thành công!');
+        setToastMsg('Đăng nhập thành công!');
         localStorage.setItem('token', data.token); 
         localStorage.setItem('user',JSON.stringify(data.user));
         setTimeout(()=>{
           history.push('/dashboard');
         },1000);
       } else {
-        setToastMsg('❌ ' + (data.message || 'Lỗi đăng nhập'));
+        setToastMsg( data.message || 'Lỗi đăng nhập');
       }
     } catch (error) {
-      setToastMsg('⚠️ Không thể kết nối đến máy chủ Backend!');
+      setToastMsg(' Không thể kết nối đến máy chủ Backend!');
     }
   };
 

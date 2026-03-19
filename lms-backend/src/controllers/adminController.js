@@ -46,4 +46,38 @@ const sendInstructorInvite = async (req, res) => {
     }
 };
 
-module.exports = { sendInstructorInvite };
+const getAllInstructors = async (req,res)=>{
+    try{
+        const instructors =await userModel.getInstructors();
+        return res.status(200).json(instructors);
+    }catch(error){
+        console.error("Lỗi khi lấy danh sách giảng viên",error);
+        return res.status(500).json({message:"Lỗi máy chủ khi lấy dữ liệu"});
+    }
+};
+
+const changeUserRole= async(req,res)=>{
+    const{userId,newRole}=req.body;
+    try{
+        await userModel.updateUserRole(userId,newRole);
+        res.status(200).json({message:"Cập nhật quyền thành công"});
+    }catch(eror){
+        res.status(500).json({message:"Lỗi khi cập nhật quyền"});
+    }
+};
+
+const removeUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await userModel.deleteUser(id);
+        res.status(200).json({ message: "Đã xóa tài khoản thành công!" });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi xóa tài khoản." });
+    }
+};
+module.exports = { 
+    sendInstructorInvite,
+    getAllInstructors,
+    changeUserRole,
+    removeUser
+    };

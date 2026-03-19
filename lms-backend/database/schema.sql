@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS Users (
     user_id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
+    phone VARCHAR(20),
     password_hash VARCHAR(255) NOT NULL, 
     role ENUM('Admin', 'Instructor', 'Student') NOT NULL DEFAULT 'Student',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

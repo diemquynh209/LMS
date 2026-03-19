@@ -4,7 +4,7 @@ const findUserByEmail = async(email)=>{
     return rows[0];
 };
 const createUser = async(fullName,email,hashedPassword,role)=>{
-    const[result]=await pool.query('INSERT INTO Users(full_name,email,password_hash,role) VALUES (?,?,?,?)',[fullName,email,hashedPassword,role]);
+    const[result]=await pool.query('INSERT INTO Users(full_name,email,phone,password_hash,role) VALUES (?,?,?,?)',[fullName,email,phone,hashedPassword,role]);
     return result;
 };
 //xu ly ma moi cho gvien
@@ -17,16 +17,32 @@ const burnInviteCode =async(email, inviteCode)=>{
 };
 const createInviteCode = async (email, inviteCode) => {
     const [result] = await pool.query(
-        'INSERT INTO Instructor_Invites (email, invite_code, is_used) VALUES (?, ?, FALSE)',
-        [email, inviteCode]
+        'INSERT INTO Instructor_Invites (email, invite_code, is_used) VALUES (?, ?, FALSE)',[email, inviteCode]
     );
     return result;
 };
+const getInstructors = async () => {
+    const [rows] = await pool.query(
+        "SELECT user_id, full_name, email,phone, created_at FROM Users WHERE role = 'Instructor' ORDER BY created_at DESC"
+    );
+    return rows;
+};
+const updateUserRole =async(useId,newRole)=>{
+    const[result]=await pool.query('UPDATE User SET role= ? WHERE user_id=?',[newRole,userId]);
+    return result;
+}
+const deleteUser= async(userId)=>{
+    const[result]=await pool.query('DELETE FROM Users WHERE user_id = ?',[userId]);
+    return result;
+}
 
 module.exports = {
         findUserByEmail,
         createUser,
         checkInviteCode,
         burnInviteCode,
-        createInviteCode
+        createInviteCode,
+        getInstructors,
+        updateUserRole,
+        deleteUser
     };

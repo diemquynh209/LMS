@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import AdminManage from './pages/AdminManage';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -20,7 +21,7 @@ import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
-
+import './theme/global.css';
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -39,6 +40,10 @@ const App: React.FC = () => (
         <Route exact path="/dashboard">
             <Dashboard />
           </Route>
+
+        <Route exact path="/admin-manage">
+          <AdminManage />
+        </Route>
 
         <Route exact path="/">
           <Redirect to="/login" />

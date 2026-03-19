@@ -9,6 +9,7 @@ import { useHistory } from 'react-router-dom';
 const Register: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone,setPhone] = useState('')
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [toastMsg, setToastMsg] = useState('');
@@ -21,21 +22,22 @@ const Register: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           full_name: fullName, 
-          email: email, 
+          email: email,
+          phone:phone,
           password: password, 
           invite_code: inviteCode 
         })
       });    
       const data = await response.json();
       if (response.ok) {
-        setToastMsg('🎉 Đăng ký thành công! Đang chuyển sang Đăng nhập...');
+        setToastMsg(' Đăng ký thành công! Đang chuyển sang Đăng nhập...');
         // Tự động chuyển về trang đăng nhập sau 2 giây
         setTimeout(() => history.push('/login'), 2000);
       } else {
-        setToastMsg('❌ ' + (data.message || 'Lỗi đăng ký'));
+        setToastMsg + (data.message || 'Lỗi đăng ký');
       }
     } catch (error) {
-      setToastMsg('⚠️ Không thể kết nối đến máy chủ Backend!');
+      setToastMsg(' Không thể kết nối đến máy chủ Backend!');
     }
   };
   return (
@@ -49,13 +51,25 @@ const Register: React.FC = () => {
           <IonCardContent>
             <IonItem className="glass-input-item" lines="none">
               <IonInput placeholder="Họ và tên" value={fullName} onIonChange={e => setFullName(e.detail.value!)}></IonInput>
+            
             </IonItem>
             <IonItem className="glass-input-item" lines="none">
               <IonInput type="email" placeholder="Email address" value={email} onIonChange={e => setEmail(e.detail.value!)}></IonInput>
             </IonItem>
+            
+            <IonItem className="glass-input-item input-spacing" lines="none">
+              <IonInput 
+                type="tel" 
+                placeholder="Số điện thoại" 
+                value={phone} 
+                onIonChange={e => setPhone(e.detail.value!)}>
+              </IonInput>
+            </IonItem>
+            
             <IonItem className="glass-input-item" lines="none">
               <IonInput type="password" placeholder="Mật khẩu" value={password} onIonChange={e => setPassword(e.detail.value!)}></IonInput>
             </IonItem>
+            
             <IonItem className="glass-input-item" lines="none">
               <IonInput placeholder="Mã mời (Dành cho Giảng viên)" value={inviteCode} onIonChange={e => setInviteCode(e.detail.value!)}></IonInput>
             </IonItem>

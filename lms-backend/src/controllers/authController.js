@@ -4,8 +4,8 @@ const userModel = require('../models/userModel');
 const { json } = require('express');
 
 const registerUser = async(req,res)=>{
-    const{full_name,email,password,invite_code}= req.body;
-    if (!full_name||!email||!password){
+    const{full_name,email,phone,password,invite_code}= req.body;
+    if (!full_name||!email||!phone||!password){
         return res.status(400).json({message:"Vui long khong de trong"})
     }
     try{
@@ -25,7 +25,7 @@ const registerUser = async(req,res)=>{
         //hash pass
         const saltRounds = 10;
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-        await userModel.createUser(full_name, email, hashedPassword, role);
+        await userModel.createUser(full_name, email,phone, hashedPassword, role);
         
         //xoa ma moi da dung
         if (role === 'Instructor') {
@@ -69,7 +69,7 @@ const loginUser =async(req,res)=>{
         return res.status(200).json({
             message:"Dang nhap thanh cong",
             token: token,
-            user:{id:user.is, full_name:user.full_name, email:user.email, role:user.role}
+            user:{id:user.id, full_name:user.full_name, email:user.email, role:user.role}
         });
     }catch (error){
         console.error("Loi dang nhap:", error);

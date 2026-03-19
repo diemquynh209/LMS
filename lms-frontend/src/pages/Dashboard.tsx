@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { 
   IonContent, IonPage, IonHeader, IonToolbar, 
-  IonTitle, IonButton, IonButtons, IonIcon, IonText, IonCard, IonCardContent
+  IonTitle, IonButton, IonButtons, IonIcon, IonText, IonCard, IonCardContent,
+  useIonViewWillEnter
 } from '@ionic/react';
 import { logOutOutline, personCircleOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
 
-const Dashboard: React.FC = () => 
-{
+const Dashboard: React.FC = () => {
   const history = useHistory();
   const [user, setUser] = useState<any>(null);
-  useEffect(() => {
+
+  useIonViewWillEnter(() => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
     } else {
       history.push('/login');
     }
-  }, [history]);
+  });
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -27,12 +28,11 @@ const Dashboard: React.FC = () =>
 
   return (
     <IonPage>
-      {}
-      <IonHeader>
-        <IonToolbar color="primary">
+      <IonHeader className="ion-no-border">
+        <IonToolbar className="transparent-toolbar">
           <IonTitle>Hệ Thống LMS</IonTitle>
           <IonButtons slot="end">
-            <IonButton onClick={handleLogout}>
+            <IonButton onClick={handleLogout} className="white-text-btn">
               <IonIcon slot="start" icon={logOutOutline} />
               Đăng xuất
             </IonButton>
@@ -40,45 +40,62 @@ const Dashboard: React.FC = () =>
         </IonToolbar>
       </IonHeader>
 
-      <IonContent className="ion-padding">
+      <IonContent className="bg-gradient-blue">
         {user && (
-          <IonCard>
-            <IonCardContent className="ion-text-center">
-              <IonIcon icon={personCircleOutline} style={{ fontSize: '80px', color: '#0277bd' }} />
-              <h2>Xin chào, <b>{user.full_name}</b>!</h2>
-              <IonText color="medium">
-                <p>Email: {user.email}</p>
-                <p>Quyền hạn: <b>{user.role}</b></p>
-              </IonText>
-            </IonCardContent>
-          </IonCard>
+          <div className="ion-text-center" style={{ paddingTop: '30px', paddingBottom: '10px' }}>
+            <h2 className="text-white text-bold" style={{ fontSize: '24px', marginTop: '10px' }}>
+              Xin chào, {user.full_name}!
+            </h2>
+            <IonText className="text-light">
+              <p style={{ margin: '5px 0' }}>Email: {user.email}</p>
+              <p style={{ margin: '5px 0' }}>Quyền hạn: <b className="text-white">{user.role}</b></p>
+            </IonText>
+          </div>
         )}
 
-        {}
-        <div className="ion-margin-top">
-          {user?.role === 'Admin' && (
-            <IonCard color="danger">
-              <IonCardContent>
-                <h3>Khu vực của Quản trị viên</h3>
-                <p>Tại đây bạn có thể quản lý người dùng, tạo mã mời giảng viên...</p>
-              </IonCardContent>
-            </IonCard>
+        <div>
+        {user?.role === 'Admin' && (
+            <>
+              {/* Qly giảng viên */}
+              <IonCard 
+                className="glass-card dashboard-card clickable-glass" 
+                onClick={() => history.push('/admin-manage')}
+              >
+                <IonCardContent className="ion-text-center" style={{ padding: '35px 10px' }}>
+                  <h2 className="text-white text-bold" style={{ fontSize: '24px', margin: '0' }}>
+                    Quản Lý Giảng Viên
+                  </h2>
+                </IonCardContent>
+              </IonCard>
+
+              {/* Qly lớp học*/}
+              <IonCard 
+                className="glass-card dashboard-card clickable-glass" 
+                onClick={() => history.push('/admin-classes')}
+              >
+                <IonCardContent className="ion-text-center" style={{ padding: '35px 10px' }}>
+                  <h2 className="text-white text-bold" style={{ fontSize: '24px', margin: '0' }}>
+                    Quản Lý Lớp Học
+                  </h2>
+                </IonCardContent>
+              </IonCard>
+            </>
           )}
 
           {user?.role === 'Instructor' && (
-            <IonCard color="success">
-              <IonCardContent>
-                <h3>Khu vực của Giảng viên</h3>
-                <p>Tại đây bạn có thể tạo lớp học mới, đăng tải video, bài giảng...</p>
+            <IonCard className="glass-card dashboard-card">
+              <IonCardContent className="ion-text-center">
+                <h3 className="card-heading">Khu vực Giảng viên</h3>
+                <p className="text-light">Tại đây bạn có thể tạo lớp học mới, đăng tải video, bài giảng...</p>
               </IonCardContent>
             </IonCard>
           )}
 
           {user?.role === 'Student' && (
-            <IonCard color="tertiary">
-              <IonCardContent>
-                <h3>Khu vực của Học viên</h3>
-                <p>Tại đây bạn có thể xem danh sách khóa học, tiến độ học tập...</p>
+            <IonCard className="glass-card dashboard-card">
+              <IonCardContent className="ion-text-center">
+                <h3 className="card-heading">Khu vực Học viên</h3>
+                <p className="text-light">Tại đây bạn có thể xem danh sách khóa học, tiến độ học tập...</p>
               </IonCardContent>
             </IonCard>
           )}
