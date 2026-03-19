@@ -15,5 +15,18 @@ const checkInviteCode = async (email,inviteCode)=>{
 const burnInviteCode =async(email, inviteCode)=>{
     await pool.query('UPDATE Instructor_Invites SET is_used = TRUE WHERE email = ? AND invite_code =?', [email,inviteCode]);
 };
+const createInviteCode = async (email, inviteCode) => {
+    const [result] = await pool.query(
+        'INSERT INTO Instructor_Invites (email, invite_code, is_used) VALUES (?, ?, FALSE)',
+        [email, inviteCode]
+    );
+    return result;
+};
 
-module.exports = {findUserByEmail,createUser,checkInviteCode,burnInviteCode};
+module.exports = {
+        findUserByEmail,
+        createUser,
+        checkInviteCode,
+        burnInviteCode,
+        createInviteCode
+    };
