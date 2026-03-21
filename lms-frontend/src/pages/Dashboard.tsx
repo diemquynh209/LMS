@@ -6,6 +6,7 @@ import {
 } from '@ionic/react';
 import { logOutOutline, personCircleOutline } from 'ionicons/icons';
 import { useHistory } from 'react-router-dom';
+import AppHeader from '../components/AppHeader';
 
 const Dashboard: React.FC = () => {
   const history = useHistory();
@@ -28,17 +29,15 @@ const Dashboard: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader className="ion-no-border">
-        <IonToolbar className="transparent-toolbar">
-          <IonTitle>Hệ Thống LMS</IonTitle>
-          <IonButtons slot="end">
-            <IonButton onClick={handleLogout} className="white-text-btn">
-              <IonIcon slot="start" icon={logOutOutline} />
-              Đăng xuất
-            </IonButton>
-          </IonButtons>
-        </IonToolbar>
-      </IonHeader>
+      <AppHeader 
+        title="Hệ Thống LMS" 
+        rightContent={
+          <IonButton onClick={handleLogout} className="text-white">
+          <IonIcon icon={logOutOutline} slot="start" />
+            ĐĂNG XUẤT
+          </IonButton>
+        } 
+      />
 
       <IonContent className="bg-gradient-blue">
         {user && (
@@ -59,7 +58,7 @@ const Dashboard: React.FC = () => {
               {/* Qly giảng viên */}
               <IonCard 
                 className="glass-card dashboard-card clickable-glass" 
-                onClick={() => history.push('/admin-manage')}
+                onClick={() => history.push('/admin-instructors')}
               >
                 <IonCardContent className="ion-text-center" style={{ padding: '35px 10px' }}>
                   <h2 className="text-white text-bold" style={{ fontSize: '24px', margin: '0' }}>

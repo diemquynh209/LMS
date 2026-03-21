@@ -125,3 +125,30 @@
   background: rgba(255, 255, 255, 0.15);
   transform: translateY(1px); 
 }
+
+.custom-role-select {
+  background: rgba(255, 255, 255, 0.15); /* Nền kính mờ */
+  border-radius: 6px;
+  padding: 4px 10px;
+  min-height: auto;
+}
+
+.custom-role-select::part(text) {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.custom-role-select::part(icon) {
+  color: #ffffff;
+  opacity: 1; 
+  font-size: 20px; 
+}
+
+.glass-toolbar {
+  --background: linear-gradient(90deg, rgba(11, 36, 71, 0.85), rgba(25, 75, 140, 0.85));
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  --color: #ffffff; 
+}

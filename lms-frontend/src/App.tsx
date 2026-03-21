@@ -4,7 +4,8 @@ import { IonReactRouter } from '@ionic/react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import AdminManage from './pages/AdminManage';
+import AdminInstructors from './pages/AdminManage/Admin-Instructors';
+import AdminStudents from './pages/AdminManage/Admin-Students';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -41,17 +42,22 @@ const App: React.FC = () => (
             <Dashboard />
           </Route>
 
-        <Route exact path="/admin-manage">
-          <AdminManage />
+        <Route exact path="/admin-instructors">
+          <AdminInstructors />
         </Route>
 
         <Route exact path="/">
           <Redirect to="/login" />
+        </Route>
+
+        <Route exact path="/admin-students">
+          <AdminStudents />
         </Route>
         
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
 );
+
 
 export default App;

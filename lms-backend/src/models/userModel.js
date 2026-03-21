@@ -27,14 +27,21 @@ const getInstructors = async () => {
     );
     return rows;
 };
-const updateUserRole =async(useId,newRole)=>{
-    const[result]=await pool.query('UPDATE User SET role= ? WHERE user_id=?',[newRole,userId]);
+const updateUserRole =async(userId,newRole)=>{
+    const[result]=await pool.query('UPDATE Users SET role= ? WHERE user_id=?',[newRole,userId]);
     return result;
 }
 const deleteUser= async(userId)=>{
     const[result]=await pool.query('DELETE FROM Users WHERE user_id = ?',[userId]);
     return result;
 }
+const getStudents = async () => {
+    const [rows] = await pool.query(
+        'SELECT * FROM Users WHERE role = ?', 
+        ['Student']
+    );
+    return rows;
+};
 
 module.exports = {
         findUserByEmail,
@@ -44,5 +51,6 @@ module.exports = {
         createInviteCode,
         getInstructors,
         updateUserRole,
-        deleteUser
+        deleteUser,
+        getStudents
     };

@@ -61,7 +61,8 @@ const changeUserRole= async(req,res)=>{
     try{
         await userModel.updateUserRole(userId,newRole);
         res.status(200).json({message:"Cập nhật quyền thành công"});
-    }catch(eror){
+    }catch(error){
+        console.log("LỖI ĐỔI QUYỀN :", error);
         res.status(500).json({message:"Lỗi khi cập nhật quyền"});
     }
 };
@@ -75,9 +76,20 @@ const removeUser = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi xóa tài khoản." });
     }
 };
+
+const getStudents = async (req, res) => {
+    try {
+        const students = await userModel.getStudents();
+        res.status(200).json(students);
+    } catch (error) {
+        console.log("🚨 LỖI LẤY DANH SÁCH HỌC VIÊN:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy danh sách học viên." });
+    }
+};
 module.exports = { 
     sendInstructorInvite,
     getAllInstructors,
     changeUserRole,
-    removeUser
+    removeUser,
+    getStudents
     };
