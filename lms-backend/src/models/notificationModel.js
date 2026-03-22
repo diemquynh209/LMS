@@ -37,8 +37,19 @@ const markAsRead = async (notificationId, userId) => {
     return result;
 };
 
+const getAllNotifications = async () => {
+    const query = `
+        SELECT n.*, u.full_name AS sender_name
+        FROM Notifications n
+        LEFT JOIN Users u ON n.sender_id = u.user_id
+        ORDER BY n.created_at DESC
+    `;
+    const [rows] = await pool.query(query);
+    return rows;
+};
 module.exports = {
     createNotification,
     getNotificationsForUser,
-    markAsRead
+    markAsRead,
+    getAllNotifications
 };

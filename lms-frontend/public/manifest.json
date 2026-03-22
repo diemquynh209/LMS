@@ -1,6 +1,6 @@
 {
-  "short_name": "Ionic App",
-  "name": "My Ionic App",
+  "short_name": "LMS",
+  "name": "Hệ thống quản lý học tập LMS ",
   "icons": [
     {
       "src": "assets/icon/favicon.png",

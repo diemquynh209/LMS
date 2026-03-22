@@ -9,6 +9,7 @@ import AdminStudents from './pages/AdminManage/AdminStudents';
 import AdminDashboard from './pages/AdminManage/AdminDashboard';
 import AdminClasses from './pages/AdminManage/AdminClasses';
 import AdminCategories from './pages/AdminManage/AdminCategories';
+import AdminNotifications from './pages/AdminManage/AdminNotifications';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -62,6 +63,10 @@ const App: React.FC = () => (
 
         <Route exact path="/admin-categories">
           <AdminCategories />
+        </Route>
+
+        <Route exact path="/admin-notifications">
+          < AdminNotifications/>
         </Route>
         
       </IonRouterOutlet>

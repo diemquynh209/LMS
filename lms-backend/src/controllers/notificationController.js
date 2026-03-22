@@ -12,7 +12,7 @@ const sendNotification = async (req, res) => {
 
         res.status(201).json({ message: "Gửi thông báo thành công!" });
     } catch (error) {
-        console.error("🚨 LỖI GỬI THÔNG BÁO:", error);
+        console.error(" LỖI GỬI THÔNG BÁO:", error);
         res.status(500).json({ message: "Lỗi server khi gửi thông báo." });
     }
 };
@@ -35,7 +35,7 @@ const getMyNotifications = async (req, res) => {
             notifications: notifications
         });
     } catch (error) {
-        console.error("🚨 LỖI LẤY THÔNG BÁO:", error);
+        console.error("LỖI LẤY THÔNG BÁO:", error);
         res.status(500).json({ message: "Lỗi server khi lấy thông báo." });
     }
 };
@@ -48,13 +48,24 @@ const markNotificationAsRead = async (req, res) => {
         await notificationModel.markAsRead(notificationId, userId);
         res.status(200).json({ message: "Đã đánh dấu đọc." });
     } catch (error) {
-        console.error("🚨 LỖI ĐÁNH DẤU ĐỌC:", error);
+        console.error(" LỖI ĐÁNH DẤU ĐỌC:", error);
         res.status(500).json({ message: "Lỗi server khi đánh dấu đọc thông báo." });
+    }
+};
+
+const getAllNotifications = async (req, res) => {
+    try {
+        const notifications = await notificationModel.getAllNotifications();
+        res.status(200).json(notifications);
+    } catch (error) {
+        console.error("LỖI LẤY LỊCH SỬ THÔNG BÁO:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy lịch sử thông báo." });
     }
 };
 
 module.exports = {
     sendNotification,
     getMyNotifications,
-    markNotificationAsRead
+    markNotificationAsRead,
+    getAllNotifications 
 };

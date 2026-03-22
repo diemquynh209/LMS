@@ -2,7 +2,7 @@ import React from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { IonButton, IonIcon, IonInput, IonSpinner, IonToast } from '@ionic/react';
 import { sendOutline, trashOutline, arrowDownCircleOutline, searchOutline } from 'ionicons/icons';
-import { useAdminInstructors } from '../../hooks/useAdminInstructors';
+import { useAdminInstructors } from '../../hooks/admin/useAdminInstructors';
 
 const AdminInstructors: React.FC = () => {
   const {
@@ -11,7 +11,7 @@ const AdminInstructors: React.FC = () => {
   } = useAdminInstructors();
 
   return (
-    <AdminLayout pageTitle="Dashboard / Quản Lý Giảng Viên">
+    <AdminLayout pageTitle=" Quản Lý Giảng Viên">
       <div style={{ padding: '20px', paddingBottom: '80px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>

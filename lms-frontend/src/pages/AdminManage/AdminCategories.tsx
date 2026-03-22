@@ -5,7 +5,7 @@ import {
   IonToolbar, IonTitle, IonContent, IonItem, IonLabel, IonInput, IonTextarea 
 } from '@ionic/react';
 import { trashOutline, createOutline, addCircleOutline } from 'ionicons/icons';
-import { useAdminCategories } from '../../hooks/useAdminCategories';
+import { useAdminCategories } from '../../hooks/admin/useAdminCategories';
 
 const AdminCategories: React.FC = () => {
   const { categories, handleCreate, handleUpdate, handleDelete, toastMsg, setToastMsg } = useAdminCategories();
@@ -39,7 +39,7 @@ const AdminCategories: React.FC = () => {
   };
 
   return (
-    <AdminLayout pageTitle="Dashboard / Quản Lý Danh Mục">
+    <AdminLayout pageTitle="Quản Lý Danh Mục">
       <div style={{ padding: '20px', paddingBottom: '80px' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
