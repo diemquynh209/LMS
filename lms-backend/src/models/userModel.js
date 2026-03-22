@@ -22,32 +22,50 @@ const createInviteCode = async (email, inviteCode) => {
     return result;
 };
 const getInstructors = async (searchTerm = '') => {
-    let query = "SELECT * FROM Users WHERE role = 'Instructor'";
+    let query = `
+        SELECT u.*, GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
+        FROM Users u 
+        LEFT JOIN Classes c ON u.user_id = c.instructor_id 
+        WHERE u.role = 'Instructor'
+    `;
     let params = [];
+    
     if (searchTerm) {
-        query += " AND (full_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+        query += " AND (u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
         const likeTerm = `%${searchTerm}%`;
         params.push(likeTerm, likeTerm, likeTerm); 
     }
+    
+    query += " GROUP BY u.user_id";
     const [rows] = await pool.query(query, params);
     return rows;
 };
-const updateUserRole =async(userId,newRole)=>{
-    const[result]=await pool.query('UPDATE Users SET role= ? WHERE user_id=?',[newRole,userId]);
+const updateUserRole = async (userId, newRole) => {
+    const [result] = await pool.query('UPDATE Users SET role = ? WHERE user_id = ?', [newRole, userId]);
+    if (newRole === 'Student') {
+        await pool.query('DELETE FROM Classes WHERE instructor_id = ?', [userId]);
+    }
     return result;
-}
+};
 const deleteUser= async(userId)=>{
     const[result]=await pool.query('DELETE FROM Users WHERE user_id = ?',[userId]);
     return result;
-}
+};
 const getStudents = async (searchTerm = '') => {
-    let query = "SELECT * FROM Users WHERE role = 'Student'";
+    let query = `
+        SELECT u.*, GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
+        FROM Users u 
+        LEFT JOIN Enrollments e ON u.user_id = e.student_id 
+        LEFT JOIN Classes c ON e.class_id = c.class_id 
+        WHERE u.role = 'Student'
+    `;
     let params = [];
     if (searchTerm) {
-        query += " AND (full_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+        query += " AND (u.full_name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)";
         const likeTerm = `%${searchTerm}%`;
-        params.push(likeTerm, likeTerm, likeTerm);
+        params.push(likeTerm, likeTerm, likeTerm); 
     }
+    query += " GROUP BY u.user_id";
     const [rows] = await pool.query(query, params);
     return rows;
 };

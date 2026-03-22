@@ -16,4 +16,5 @@ router.get('/categories', adminController.getCategories);
 router.post('/categories', adminController.createCategory);
 router.put('/categories/:id', adminController.updateCategory);
 router.delete('/categories/:id', adminController.deleteCategory);
+router.put('/update-class-status/:id', adminController.updateClassStatus);
 module.exports = router;

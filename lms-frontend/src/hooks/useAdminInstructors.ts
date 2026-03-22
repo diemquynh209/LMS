@@ -33,23 +33,31 @@ export const useAdminInstructors = () => {
       } catch (error) { setToastMsg('Lỗi kết nối!'); } finally { setIsLoading(false); }
   };
 
-  const handleRoleChange = async (userId: number, newRole: string) => { 
+  const handleRoleChange = async (userId: number, fullName: string, newRole: string) => {
+    if (window.confirm(`Hạ giảng viên "${fullName}" đồng thời sẽ xóa các lớp học của họ. Bạn có đồng ý?`)) {
       try {
         const response = await fetch('http://localhost:5000/api/admin/update-role', {
           method: 'PUT', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId, newRole })
         });
-        if (response.ok) { setToastMsg('Cập nhật quyền thành công!'); fetchInstructors(); }
+        if (response.ok) { 
+          setToastMsg('Hạ cấp và xóa lớp học thành công!'); 
+          fetchInstructors(); 
+        }
       } catch (error) { setToastMsg('Lỗi kết nối'); }
+    }
   };
   
-  const handleDeleteUser = async (userId: number, fullName: string) => {
-      if (window.confirm(`Xóa tài khoản của ${fullName}?`)) {
-        try {
-          const response = await fetch(`http://localhost:5000/api/admin/delete-user/${userId}`, { method: 'DELETE' });
-          if (response.ok) { setToastMsg('Đã xóa thành công!'); fetchInstructors(); }
-        } catch (error) { setToastMsg('Lỗi kết nối'); }
-      }
+  const handleDeleteUser = async (userId: number, fullName: string) => { 
+    if (window.confirm(`Xóa giảng viên "${fullName}" sẽ xóa các lớp học của họ. Bạn có đồng ý?`)) {
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/delete-user/${userId}`, { method: 'DELETE' });
+        if (response.ok) { 
+          setToastMsg('Đã xóa giảng viên và lớp học!'); 
+          fetchInstructors(); 
+        }
+      } catch (error) { setToastMsg('Lỗi kết nối'); }
+    }
   };
 
   return {

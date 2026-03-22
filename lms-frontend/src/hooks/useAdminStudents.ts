@@ -18,20 +18,23 @@ export const useAdminStudents = () => {
   };
 
   useIonViewWillEnter(() => { fetchStudents(); });
-
-  const handleRoleChange = async (userId: number, currentRole: string, newRole: string) => {
+  
+  const handleRoleChange = async (userId: number, fullName: string, currentRole: string, newRole: string) => {
     if (currentRole === newRole) return; 
-    try {
-      const response = await fetch('http://localhost:5000/api/admin/update-role', {
-        method: 'PUT', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, newRole })
-      });
-      if (response.ok) { setToastMsg('Cập nhật quyền thành công!'); fetchStudents(); }
-    } catch (error) { setToastMsg('Lỗi kết nối!'); }
-  };
+    
+    if (window.confirm(`Nâng cấp học viên "${fullName}" thành Giảng viên? Các khóa học họ đang tham gia sẽ bị hủy bỏ. Bạn đồng ý chứ?`)) {
+      try {
+        const response = await fetch('http://localhost:5000/api/admin/update-role', {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, newRole })
+        });
+        if (response.ok) { setToastMsg('Cập nhật quyền thành công!'); fetchStudents(); }
+      } catch (error) { setToastMsg('Lỗi kết nối!'); }
+    }
+  }
 
   const handleDeleteUser = async (userId: number, fullName: string) => {
-    if (window.confirm(`Bạn có chắc chắn muốn xóa tài khoản của ${fullName}?`)) {
+    if (window.confirm(`⚠️ Xóa học viên "${fullName}" sẽ xóa toàn bộ tiến trình học tập của họ. Bạn có chắc chắn?`)) {
       try {
         const response = await fetch(`http://localhost:5000/api/admin/delete-user/${userId}`, { method: 'DELETE' });
         if (response.ok) { setToastMsg('Đã xóa thành công!'); fetchStudents(); }

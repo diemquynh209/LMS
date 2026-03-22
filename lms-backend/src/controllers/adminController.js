@@ -201,6 +201,23 @@ const deleteCategory = async (req, res) => {
         res.status(500).json({ message: "Lỗi server khi xóa danh mục." });
     }
 };
+const updateClassStatus = async (req, res) => {
+    try {
+        const classId = req.params.id;
+        const { status } = req.body;
+        
+        // Kiểm tra dữ liệu đầu vào cho an toàn
+        if (!['Draft', 'Published', 'Closed'].includes(status)) {
+            return res.status(400).json({ message: "Trạng thái không hợp lệ." });
+        }
+        
+        await classModel.updateClassStatus(classId, status);
+        res.status(200).json({ message: "Cập nhật trạng thái thành công!" });
+    } catch (error) {
+        console.log("🚨 LỖI CẬP NHẬT TRẠNG THÁI LỚP HỌC:", error);
+        res.status(500).json({ message: "Lỗi server khi cập nhật trạng thái." });
+    }
+};
 
 module.exports = { 
     sendInstructorInvite,
@@ -217,5 +234,6 @@ module.exports = {
     getCategories,
     createCategory,
     updateCategory,
-    deleteCategory
+    deleteCategory,
+    updateClassStatus
     };

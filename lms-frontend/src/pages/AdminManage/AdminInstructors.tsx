@@ -35,19 +35,45 @@ const AdminInstructors: React.FC = () => {
         <div className="admin-table-container">
           <table className="admin-table">
             <thead>
-              <tr><th>ID</th><th>Họ và Tên</th><th>Email</th><th>Số điện thoại</th><th>Trạng thái</th><th style={{ textAlign: 'center' }}>Hành động</th></tr>
+              <tr>
+                <th>ID</th>
+                <th>Họ và Tên</th>
+                <th>Lớp học phụ trách</th>
+                <th>Email</th>
+                <th>Số điện thoại</th>
+                <th>Trạng thái</th>
+                <th style={{ textAlign: 'center' }}>Hành động</th>
+              </tr>
             </thead>
             <tbody>
               {instructors?.map((ins: any) => (
                 <tr key={ins.user_id}>
                   <td>#{ins.user_id}</td>
                   <td style={{ fontWeight: 'bold' }}>{ins.full_name}</td>
+                  
+                  <td style={{ maxWidth: '250px' }}>
+                    {ins.classes ? (
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                        {ins.classes.split(',').map((className: string, index: number) => (
+                          <span key={index} style={{
+                            background: '#e3f2fd', color: '#1976d2', padding: '3px 8px', 
+                            borderRadius: '12px', fontSize: '12px', border: '1px solid #bbdefb'
+                          }}>
+                            {className.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <span style={{ color: '#999', fontStyle: 'italic' }}>Chưa có lớp</span>
+                    )}
+                  </td>
+
                   <td>{ins.email}</td>
                   <td>{ins.phone || 'Chưa cập nhật'}</td>
                   <td><span className="badge-active">Hoạt động</span></td>
                   <td>
                     <div className="action-td-container">
-                      <IonButton className="action-btn" color="warning" fill="clear" onClick={() => handleRoleChange(ins.user_id, 'Student')} title="Giáng cấp">
+                      <IonButton className="action-btn" color="warning" fill="clear" onClick={() => handleRoleChange(ins.user_id, ins.full_name, 'Student')} title="Giáng cấp">
                         <IonIcon slot="icon-only" icon={arrowDownCircleOutline} />
                       </IonButton>
                       <IonButton className="action-btn" color="danger" fill="clear" onClick={() => handleDeleteUser(ins.user_id, ins.full_name)} title="Xóa">
@@ -58,7 +84,7 @@ const AdminInstructors: React.FC = () => {
                 </tr>
               ))}
               {instructors?.length === 0 && (
-                <tr><td colSpan={6} style={{ textAlign: 'center', padding: '30px' }}>Không tìm thấy giảng viên nào.</td></tr>
+                <tr><td colSpan={7} style={{ textAlign: 'center', padding: '30px' }}>Không tìm thấy giảng viên nào.</td></tr>
               )}
             </tbody>
           </table>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonSplitPane, IonMenu, IonList, IonItem, 
   IonIcon, IonLabel, IonHeader, IonToolbar, IonTitle,
-  IonButtons, IonButton, IonMenuButton, IonMenuToggle
+  IonButtons, IonButton, IonMenuButton, IonMenuToggle 
 } from '@ionic/react';
 import { 
   schoolOutline, peopleOutline, bookOutline, documentTextOutline, 
@@ -33,15 +33,10 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
 
   return (
     <IonSplitPane contentId="main-content">
-      <IonMenu menuId="admin-menu" contentId="main-content" type="overlay">
+      <IonMenu contentId="main-content" type="overlay" menuId="admin-menu">
         <IonContent className="admin-sidebar">
-          <div style={{ 
-            padding: '15px 20px', 
-            borderBottom: '1px solid rgba(255,255,255,0.1)',
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center' 
-          }}>
+          
+          <div style={{ padding: '15px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h2 style={{ color: 'white', fontWeight: 'bold', margin: 0 }}>{t.sidebarTitle}</h2>
             <IonMenuToggle autoHide={false}>
               <IonButton fill="clear" style={{ '--color': 'white', margin: 0 }}>
@@ -49,31 +44,52 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
               </IonButton>
             </IonMenuToggle>
           </div>
+
           <IonList style={{ background: 'transparent', marginTop: '10px' }}>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-dashboard' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-dashboard')}>
-              <IonIcon slot="start" icon={gridOutline} />
-              <IonLabel>{t.menu.dashboard}</IonLabel>
-            </IonItem>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-students' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-students')}>
-              <IonIcon slot="start" icon={peopleOutline} />
-              <IonLabel>{t.menu.students}</IonLabel>
-            </IonItem>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-instructors' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-instructors')}>
-              <IonIcon slot="start" icon={schoolOutline} />
-              <IonLabel>{t.menu.instructors}</IonLabel>
-            </IonItem>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-classes' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-classes')}>
-              <IonIcon slot="start" icon={bookOutline} />
-              <IonLabel>{t.menu.classes}</IonLabel>
-            </IonItem>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-categories' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-categories')}>
-              <IonIcon slot="start" icon={documentTextOutline} />
-              <IonLabel>{t.menu.categories}</IonLabel>
-            </IonItem>
-            <IonItem button className={`glass-menu-item ${location.pathname === '/admin-notifications' ? 'active-menu' : ''}`} onClick={() => history.push('/admin-notifications')}>
-              <IonIcon slot="start" icon={notificationsOutline} />
-              <IonLabel>{t.menu.notifications}</IonLabel>
-            </IonItem>
+            
+            {/*routerDirection="root" để dọn rác DOM */}
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-dashboard" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-dashboard' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={gridOutline} />
+                <IonLabel>{t.menu.dashboard}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-students" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-students' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={peopleOutline} />
+                <IonLabel>{t.menu.students}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-instructors" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-instructors' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={schoolOutline} />
+                <IonLabel>{t.menu.instructors}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-classes" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-classes' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={bookOutline} />
+                <IonLabel>{t.menu.classes}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-categories" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-categories' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={documentTextOutline} />
+                <IonLabel>{t.menu.categories}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/admin-notifications" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-notifications' ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={notificationsOutline} />
+                <IonLabel>{t.menu.notifications}</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
           </IonList>
         </IonContent>
       </IonMenu>
@@ -81,7 +97,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
       <IonPage id="main-content">
         <IonHeader className="ion-no-border">
           <IonToolbar color="light">
-            <IonButtons slot="start"><IonMenuButton menu="admin-menu" /></IonButtons>
+            <IonButtons slot="start">
+              <IonMenuButton menu="admin-menu" />
+            </IonButtons>
             <IonTitle>{pageTitle}</IonTitle>
             <IonButtons slot="end">
               <IonButton onClick={() => setLang(lang === 'vi' ? 'en' : 'vi')} className="text-bold">

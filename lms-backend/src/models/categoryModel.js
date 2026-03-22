@@ -1,6 +1,13 @@
 const pool = require('../config/db');
 const getAllCategories = async () => {
-    const [rows] = await pool.query('SELECT * FROM Categories ORDER BY category_name ASC');
+    const query = `
+        SELECT c.*, GROUP_CONCAT(cl.class_name SEPARATOR ', ') AS classes
+        FROM Categories c
+        LEFT JOIN Classes cl ON c.category_id = cl.category_id
+        GROUP BY c.category_id
+        ORDER BY c.category_name ASC
+    `;
+    const [rows] = await pool.query(query);
     return rows;
 };
 
