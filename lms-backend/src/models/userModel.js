@@ -3,8 +3,8 @@ const findUserByEmail = async(email)=>{
     const [rows]=await pool.query('SELECT*FROM Users WHERE email =?',[email]);
     return rows[0];
 };
-const createUser = async(fullName,email,hashedPassword,role)=>{
-    const[result]=await pool.query('INSERT INTO Users(full_name,email,phone,password_hash,role) VALUES (?,?,?,?)',[fullName,email,phone,hashedPassword,role]);
+const createUser = async(fullName,email,phone,hashedPassword,role)=>{
+    const[result]=await pool.query('INSERT INTO Users(full_name,email,phone,password_hash,role) VALUES (?,?,?,?,?)',[fullName,email,phone,hashedPassword,role]);
     return result;
 };
 //xu ly ma moi cho gvien
@@ -21,10 +21,15 @@ const createInviteCode = async (email, inviteCode) => {
     );
     return result;
 };
-const getInstructors = async () => {
-    const [rows] = await pool.query(
-        "SELECT user_id, full_name, email,phone, created_at FROM Users WHERE role = 'Instructor' ORDER BY created_at DESC"
-    );
+const getInstructors = async (searchTerm = '') => {
+    let query = "SELECT * FROM Users WHERE role = 'Instructor'";
+    let params = [];
+    if (searchTerm) {
+        query += " AND (full_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+        const likeTerm = `%${searchTerm}%`;
+        params.push(likeTerm, likeTerm, likeTerm); 
+    }
+    const [rows] = await pool.query(query, params);
     return rows;
 };
 const updateUserRole =async(userId,newRole)=>{
@@ -35,11 +40,15 @@ const deleteUser= async(userId)=>{
     const[result]=await pool.query('DELETE FROM Users WHERE user_id = ?',[userId]);
     return result;
 }
-const getStudents = async () => {
-    const [rows] = await pool.query(
-        'SELECT * FROM Users WHERE role = ?', 
-        ['Student']
-    );
+const getStudents = async (searchTerm = '') => {
+    let query = "SELECT * FROM Users WHERE role = 'Student'";
+    let params = [];
+    if (searchTerm) {
+        query += " AND (full_name LIKE ? OR email LIKE ? OR phone LIKE ?)";
+        const likeTerm = `%${searchTerm}%`;
+        params.push(likeTerm, likeTerm, likeTerm);
+    }
+    const [rows] = await pool.query(query, params);
     return rows;
 };
 

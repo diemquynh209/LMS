@@ -31,7 +31,6 @@ const Register: React.FC = () => {
       const data = await response.json();
       if (response.ok) {
         setToastMsg(' Đăng ký thành công! Đang chuyển sang Đăng nhập...');
-        // Tự động chuyển về trang đăng nhập sau 2 giây
         setTimeout(() => history.push('/login'), 2000);
       } else {
         setToastMsg + (data.message || 'Lỗi đăng ký');

@@ -4,24 +4,20 @@ import { IonReactRouter } from '@ionic/react-router';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
-import AdminInstructors from './pages/AdminManage/Admin-Instructors';
-import AdminStudents from './pages/AdminManage/Admin-Students';
+import AdminInstructors from './pages/AdminManage/AdminInstructors';
+import AdminStudents from './pages/AdminManage/AdminStudents';
+import AdminDashboard from './pages/AdminManage/AdminDashboard';
 
-/* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
-/* Basic CSS for apps built with Ionic */
 import '@ionic/react/css/normalize.css';
 import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
-/* Optional CSS utils that can be commented out */
 import '@ionic/react/css/padding.css';
 import '@ionic/react/css/float-elements.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
-/* Theme variables */
-import './theme/variables.css';
 import './theme/global.css';
 setupIonicReact();
 
@@ -42,6 +38,10 @@ const App: React.FC = () => (
             <Dashboard />
           </Route>
 
+        <Route exact path="/admin-dashboard">
+            <AdminDashboard />
+        </Route>
+        
         <Route exact path="/admin-instructors">
           <AdminInstructors />
         </Route>

@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS Users (
 CREATE TABLE IF NOT EXISTS Classes (
     class_id INT AUTO_INCREMENT PRIMARY KEY,
     instructor_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
+    class_name VARCHAR(255) NOT NULL,
     description TEXT,
     status ENUM('Draft', 'Published', 'Closed') DEFAULT 'Draft',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS Enrollments (
 CREATE TABLE IF NOT EXISTS Chapters (
     chapter_id INT AUTO_INCREMENT PRIMARY KEY,
     class_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
+    chapter_name VARCHAR(255) NOT NULL,
     order_index INT DEFAULT 0,
     FOREIGN KEY (class_id) REFERENCES Classes(class_id) ON DELETE CASCADE
 );
@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS Chapters (
 CREATE TABLE IF NOT EXISTS Lessons (
     lesson_id INT AUTO_INCREMENT PRIMARY KEY,
     chapter_id INT NOT NULL,
-    title VARCHAR(255) NOT NULL,
+    lesson_name VARCHAR(255) NOT NULL,
     content TEXT,
     video_url VARCHAR(500),
     document_url VARCHAR(500),
@@ -59,4 +59,50 @@ CREATE TABLE Instructor_Invites (
     is_used BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 DAY)
+);
+CREATE TABLE IF NOT EXISTS Lesson_Reports (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    lesson_id INT NOT NULL,
+    student_id INT NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    status ENUM('Pending', 'Resolved', 'Dismissed') DEFAULT 'Pending', 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lesson_id) REFERENCES Lessons(lesson_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    UNIQUE(lesson_id, student_id) 
+);
+CREATE TABLE IF NOT EXISTS Categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+ALTER TABLE Classes ADD COLUMN category_id INT;
+ALTER TABLE Classes 
+ADD CONSTRAINT fk_class_category 
+FOREIGN KEY (category_id) REFERENCES Categories(category_id) 
+ON DELETE SET NULL;
+
+CREATE TABLE Notifications (
+    notification_id INT AUTO_INCREMENT PRIMARY KEY,
+    sender_id INT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type ENUM('System', 'Course', 'Assignment') DEFAULT 'System', 
+    target_role ENUM('All', 'Instructor', 'Student', 'SpecificUser') DEFAULT 'All', 
+    target_user_id INT NULL, 
+    link_url VARCHAR(255) NULL, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_id) REFERENCES Users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (target_user_id) REFERENCES Users(user_id) ON DELETE CASCADE
+);
+
+CREATE TABLE Notification_Reads (
+    read_id INT AUTO_INCREMENT PRIMARY KEY,
+    notification_id INT NOT NULL,
+    user_id INT NOT NULL,
+    read_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (notification_id) REFERENCES Notifications(notification_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    UNIQUE(notification_id, user_id) 
 );

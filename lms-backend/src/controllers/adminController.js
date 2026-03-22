@@ -1,6 +1,10 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 const userModel = require('../models/userModel');
+const classModel = require('../models/classModel');
+const lessonModel = require('../models/lessonModel');
+const dashboardModel = require('../models/adminDBModel')
+const categoryModel = require('../models/categoryModel');
 
 const sendInstructorInvite = async (req, res) => {
     const { instructorEmail } = req.body;
@@ -37,7 +41,6 @@ const sendInstructorInvite = async (req, res) => {
         await transporter.sendMail(mailOptions);
         return res.status(200).json({ 
             message: "Đã tạo mã và gửi email thành công!",
-            code_generated: inviteCode // Tạm thời in ra đây để bạn dễ kiểm tra khi test
         });
 
     } catch (error) {
@@ -48,7 +51,8 @@ const sendInstructorInvite = async (req, res) => {
 
 const getAllInstructors = async (req,res)=>{
     try{
-        const instructors =await userModel.getInstructors();
+        const searchTerm = req.query.search || '';
+        const instructors =await userModel.getInstructors(searchTerm);
         return res.status(200).json(instructors);
     }catch(error){
         console.error("Lỗi khi lấy danh sách giảng viên",error);
@@ -79,17 +83,139 @@ const removeUser = async (req, res) => {
 
 const getStudents = async (req, res) => {
     try {
-        const students = await userModel.getStudents();
+        const searchTerm = req.query.search || '';
+        const students = await userModel.getStudents(searchTerm);
         res.status(200).json(students);
     } catch (error) {
         console.log("🚨 LỖI LẤY DANH SÁCH HỌC VIÊN:", error);
         res.status(500).json({ message: "Lỗi server khi lấy danh sách học viên." });
     }
 };
+const getAllClasses = async (req, res) => {
+    try {
+        const searchTerm = req.query.search || '';
+        const classes = await classModel.getClasses(searchTerm);
+        res.status(200).json(classes);
+    } catch (error) {
+        console.log("🚨 LỖI LẤY DANH SÁCH LỚP HỌC:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy danh sách lớp học." });
+    }
+};
+const deleteClass = async (req, res) => {
+    try {
+        const classId = req.params.id;
+        await classModel.deleteClass(classId);
+        res.status(200).json({ message: "Đã xóa lớp học thành công!" });
+    } catch (error) {
+        console.log("🚨 LỖI XÓA LỚP HỌC:", error);
+        res.status(500).json({ message: "Lỗi server khi xóa lớp học." });
+    }
+};
+
+const getLessonReports = async (req, res) => {
+    try {
+        const statusFilter = req.query.status || '';
+        const reports = await lessonModel.getAllReports(statusFilter);
+        res.status(200).json(reports);
+    } catch (error) {
+        console.log("🚨 LỖI LẤY DANH SÁCH BÁO CÁO:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy báo cáo." });
+    }
+};
+
+const updateReportStatus = async (req, res) => {
+    try {
+        const reportId = req.params.id;
+        const { status } = req.body;
+        await lessonModel.updateReportStatus(reportId, status);
+        res.status(200).json({ message: "Đã cập nhật trạng thái báo cáo!" });
+    } catch (error) {
+        console.log("🚨 LỖI CẬP NHẬT TRẠNG THÁI BÁO CÁO:", error);
+        res.status(500).json({ message: "Lỗi server khi cập nhật báo cáo." });
+    }
+};
+
+const deleteLesson = async (req, res) => {
+    try {
+        const lessonId = req.params.id;
+        await lessonModel.deleteLesson(lessonId);
+        res.status(200).json({ message: "Đã xóa bài giảng thành công!" });
+    } catch (error) {
+        console.log("🚨 LỖI XÓA BÀI GIẢNG:", error);
+        res.status(500).json({ message: "Lỗi server khi xóa bài giảng." });
+    }
+};
+const getDashboardData = async (req, res) => {
+    try {
+        const stats = await dashboardModel.getDashboardStats();
+        res.status(200).json(stats);
+    } catch (error) {
+        console.log("🚨 LỖI LẤY DỮ LIỆU DASHBOARD:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy thống kê." });
+    }
+};
+
+const getCategories = async (req, res) => {
+    try {
+        const categories = await categoryModel.getAllCategories();
+        res.status(200).json(categories);
+    } catch (error) {
+        console.log("🚨 LỖI LẤY DANH MỤC:", error);
+        res.status(500).json({ message: "Lỗi server khi lấy danh mục." });
+    }
+};
+
+const createCategory = async (req, res) => {
+    try {
+        const { category_name, description } = req.body;
+        if (!category_name) return res.status(400).json({ message: "Tên danh mục không được để trống!" });
+        
+        await categoryModel.addCategory(category_name, description);
+        res.status(201).json({ message: "Đã tạo danh mục thành công!" });
+    } catch (error) {
+        console.log("🚨 LỖI TẠO DANH MỤC:", error);
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ message: "Tên danh mục này đã tồn tại!" });
+        }
+        res.status(500).json({ message: "Lỗi server khi tạo danh mục." });
+    }
+};
+const updateCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+        const { category_name, description } = req.body;
+        await categoryModel.updateCategory(categoryId, category_name, description);
+        res.status(200).json({ message: "Cập nhật danh mục thành công!" });
+    } catch (error) {
+        console.log("🚨 LỖI CẬP NHẬT DANH MỤC:", error);
+        res.status(500).json({ message: "Lỗi server khi cập nhật danh mục." });
+    }
+};
+const deleteCategory = async (req, res) => {
+    try {
+        const categoryId = req.params.id;
+        await categoryModel.deleteCategory(categoryId);
+        res.status(200).json({ message: "Đã xóa danh mục!" });
+    } catch (error) {
+        console.log("🚨 LỖI XÓA DANH MỤC:", error);
+        res.status(500).json({ message: "Lỗi server khi xóa danh mục." });
+    }
+};
+
 module.exports = { 
     sendInstructorInvite,
     getAllInstructors,
     changeUserRole,
     removeUser,
-    getStudents
+    getStudents,
+    getAllClasses,
+    deleteClass,
+    getLessonReports,
+    updateReportStatus,
+    deleteLesson,
+    getDashboardData,
+    getCategories,
+    createCategory,
+    updateCategory,
+    deleteCategory
     };
