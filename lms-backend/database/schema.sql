@@ -106,3 +106,24 @@ CREATE TABLE Notification_Reads (
     FOREIGN KEY (user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
     UNIQUE(notification_id, user_id) 
 );
+
+CREATE TABLE IF NOT EXISTS Questions (
+    question_id INT AUTO_INCREMENT PRIMARY KEY,
+    lesson_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    question_type ENUM('MultipleChoice', 'TrueFalse') DEFAULT 'MultipleChoice',
+    options JSON, 
+    correct_answer VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lesson_id) REFERENCES Lessons(lesson_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Student_Wrong_Answers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    question_id INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES Questions(question_id) ON DELETE CASCADE,
+    UNIQUE(student_id, question_id)
+);
