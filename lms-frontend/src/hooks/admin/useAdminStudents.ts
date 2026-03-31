@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useIonViewWillEnter } from '@ionic/react';
 
 export const useAdminStudents = () => {
   const [toastMsg, setToastMsg] = useState('');
   const [students, setStudents] = useState<any[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchStudents = async (searchTerm: string = '') => {
     try {
@@ -11,6 +14,7 @@ export const useAdminStudents = () => {
       if (response.ok) {
         const data = await response.json();
         setStudents(Array.isArray(data) ? data : []);
+        setCurrentPage(1); 
       }
     } catch (error) {
       console.error("Không thể tải danh sách học viên");
@@ -18,7 +22,15 @@ export const useAdminStudents = () => {
   };
 
   useIonViewWillEnter(() => { fetchStudents(); });
-  
+
+  const totalPages = Math.ceil(students.length / itemsPerPage);
+
+  const currentStudents = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return students.slice(startIndex, endIndex);
+  }, [students, currentPage]);
+
   const handleRoleChange = async (userId: number, fullName: string, currentRole: string, newRole: string) => {
     if (currentRole === newRole) return; 
     
@@ -43,8 +55,7 @@ export const useAdminStudents = () => {
   };
 
   return {
-    toastMsg, setToastMsg, students,
-    fetchStudents, 
-    handleRoleChange, handleDeleteUser
+    toastMsg, setToastMsg, fetchStudents, handleRoleChange, handleDeleteUser,
+    currentStudents, currentPage, setCurrentPage, totalPages
   };
 };

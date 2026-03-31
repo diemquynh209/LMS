@@ -8,6 +8,7 @@ import {
 import { paperPlaneOutline, megaphoneOutline } from 'ionicons/icons';
 import { useAdminNotifications } from '../../hooks/admin/useAdminNotifications';
 import NotificationTable from '../../components/shared/NotificationTable';
+import '../../theme/pages/AdminPages.css';
 
 const AdminNotifications: React.FC = () => {
   const { notifications, toastMsg, setToastMsg, isLoading, handleSendNotification } = useAdminNotifications();
@@ -34,10 +35,10 @@ const AdminNotifications: React.FC = () => {
 
   return (
     <AdminLayout pageTitle="Quản Lý Thông Báo">
-      <div style={{ padding: '20px', paddingBottom: '80px' }}>
+      <div className="admin-page-container">
         
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontWeight: 'bold' }}>Lịch sử Thông báo</h2>
+        <div className="admin-page-header">
+          <h2 className="admin-page-title">Lịch sử Thông báo</h2>
           
           <IonButton color="primary" onClick={() => setShowModal(true)}>
             <IonIcon slot="start" icon={paperPlaneOutline} /> TẠO THÔNG BÁO
@@ -54,16 +55,19 @@ const AdminNotifications: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <IonLabel position="stacked">Tiêu đề thông báo <span style={{ color: 'red' }}>*</span></IonLabel>
+          
+          <IonItem className="admin-modal-item">
+            <IonLabel position="stacked">Tiêu đề thông báo <span className="admin-required-star">*</span></IonLabel>
             <IonInput value={title} onIonInput={e => setTitle(e.detail.value!)} placeholder="VD: Bảo trì hệ thống..." />
           </IonItem>
-          <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <IonLabel position="stacked">Nội dung <span style={{ color: 'red' }}>*</span></IonLabel>
+          
+          <IonItem className="admin-modal-item">
+            <IonLabel position="stacked">Nội dung <span className="admin-required-star">*</span></IonLabel>
             <IonTextarea value={message} onIonInput={e => setMessage(e.detail.value!)} placeholder="Nhập nội dung chi tiết..." rows={5} />
           </IonItem>
-          <div style={{ display: 'flex', gap: '15px', marginBottom: '20px' }}>
-            <IonItem style={{ flex: 1, border: '1px solid #ddd', borderRadius: '8px' }}>
+          
+          <div className="admin-modal-row">
+            <IonItem className="admin-modal-item-flex">
               <IonLabel position="stacked">Đối tượng nhận</IonLabel>
               <IonSelect value={targetRole} onIonChange={e => setTargetRole(e.detail.value)} interface="popover">
                 <IonSelectOption value="All">Tất cả người dùng</IonSelectOption>
@@ -71,7 +75,8 @@ const AdminNotifications: React.FC = () => {
                 <IonSelectOption value="Instructor">Chỉ Giảng viên</IonSelectOption>
               </IonSelect>
             </IonItem>
-            <IonItem style={{ flex: 1, border: '1px solid #ddd', borderRadius: '8px' }}>
+            
+            <IonItem className="admin-modal-item-flex">
               <IonLabel position="stacked">Loại thông báo</IonLabel>
               <IonSelect value={type} onIonChange={e => setType(e.detail.value)} interface="popover">
                 <IonSelectOption value="System">Hệ thống (System)</IonSelectOption>
@@ -79,12 +84,14 @@ const AdminNotifications: React.FC = () => {
               </IonSelect>
             </IonItem>
           </div>
-          <div style={{ display: 'flex', gap: '10px', marginTop: '30px' }}>
+          
+          <div className="admin-modal-btn-group mt-30">
             <IonButton expand="block" color="medium" fill="outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>HỦY BỎ</IonButton>
             <IonButton expand="block" color="primary" style={{ flex: 1 }} onClick={handleSend} disabled={isLoading}>
               <IonIcon slot="start" icon={megaphoneOutline} /> {isLoading ? 'ĐANG GỬI...' : 'PHÁT THÔNG BÁO'}
             </IonButton>
           </div>
+
         </IonContent>
       </IonModal>
 

@@ -1,0 +1,155 @@
+/*CHUNG (CONTAINER, HEADER, TITLE)*/
+.admin-page-container {
+  padding: 20px;
+  padding-bottom: 80px;
+}
+
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.admin-page-title {
+  margin: 0;
+  font-weight: bold;
+}
+
+/*tìm kiếm/hành động*/
+.admin-actions-wrapper {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/*Tìm kiếm &Nhập Email */
+.admin-search-bar, 
+.admin-input-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  height: 45px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  flex: 1;
+}
+
+.admin-search-bar {
+  padding: 2px 15px;
+  max-width: 350px;
+}
+
+.admin-search-bar.with-shadow {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  max-width: 300px;
+}
+
+.admin-input-bar {
+  padding: 2px 10px;
+  max-width: 350px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.admin-search-icon {
+  color: #888;
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.admin-search-input {
+  --padding-start: 0px;
+}
+
+.admin-invite-input {
+  --padding-start: 10px;
+}
+
+
+/* BẢNG VÀ CÁC THẺ */
+.admin-table-empty {
+  text-align: center;
+  padding: 30px;
+}
+
+.td-bold {
+  font-weight: bold;
+}
+
+.td-max-width-250 {
+  max-width: 250px;
+}
+
+.td-max-width-300 {
+  max-width: 300px;
+}
+
+.text-empty-italic {
+  color: #999;
+  font-style: italic;
+}
+
+/* Container chứa các thẻ tag */
+.badge-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Base style cho thẻ Tag */
+.badge-tag {
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+/* Tag Xanh (Dùng cho Giảng viên) */
+.badge-blue {
+  background: #e3f2fd;
+  color: #1976d2;
+  border: 1px solid #bbdefb;
+}
+
+/* Tag Tím (Dùng cho Danh mục) */
+.badge-purple {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border: 1px solid #e1bee7;
+}
+
+
+/*POPUP THÊM/SỬA*/
+.admin-modal-item {
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.admin-modal-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.admin-modal-item-flex {
+  flex: 1;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.admin-required-star {
+  color: red;
+}
+
+.admin-modal-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-modal-btn-group.mt-30 {
+  margin-top: 30px;
+}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useIonViewWillEnter } from '@ionic/react';
 
 export const useAdminInstructors = () => {
@@ -7,17 +7,28 @@ export const useAdminInstructors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [instructors, setInstructors] = useState<any[]>([]);
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
   const fetchInstructors = async (searchTerm: string = '') => {
     try {
       const response = await fetch(`http://localhost:5000/api/admin/instructors?search=${encodeURIComponent(searchTerm)}`);
       if (response.ok) {
         const data = await response.json();
         setInstructors(Array.isArray(data) ? data : []);
+        setCurrentPage(1); // Reset về trang 1 khi tìm kiếm
       }
     } catch (error) { console.error("Không thể tải danh sách"); }
   };
 
   useIonViewWillEnter(() => { fetchInstructors(); });
+  const totalPages = Math.ceil(instructors.length / itemsPerPage);
+
+  const currentInstructors = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return instructors.slice(startIndex, endIndex);
+  }, [instructors, currentPage]);
 
   const handleSendInvite = async () => { 
       if (!email) { setToastMsg('Vui lòng nhập email!'); return; }
@@ -61,8 +72,8 @@ export const useAdminInstructors = () => {
   };
 
   return {
-    email, setEmail, toastMsg, setToastMsg, isLoading, instructors,
-    fetchInstructors, 
-    handleSendInvite, handleRoleChange, handleDeleteUser
+    email, setEmail, toastMsg, setToastMsg, isLoading,
+    fetchInstructors, handleSendInvite, handleRoleChange, handleDeleteUser,
+    currentInstructors, currentPage, setCurrentPage, totalPages
   };
 };

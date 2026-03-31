@@ -6,6 +6,7 @@ import {
 } from '@ionic/react';
 import { trashOutline, createOutline, addCircleOutline } from 'ionicons/icons';
 import { useAdminCategories } from '../../hooks/admin/useAdminCategories';
+import '../../theme/pages/AdminPages.css'; 
 
 const AdminCategories: React.FC = () => {
   const { categories, handleCreate, handleUpdate, handleDelete, toastMsg, setToastMsg } = useAdminCategories();
@@ -40,10 +41,10 @@ const AdminCategories: React.FC = () => {
 
   return (
     <AdminLayout pageTitle="Quản Lý Danh Mục">
-      <div style={{ padding: '20px', paddingBottom: '80px' }}>
+      <div className="admin-page-container">
         
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-          <h2 style={{ margin: 0, fontWeight: 'bold' }}>Danh mục Lớp học</h2>
+        <div className="admin-page-header">
+          <h2 className="admin-page-title">Danh mục Lớp học</h2>
           
           <IonButton color="primary" onClick={() => openModal()}>
             <IonIcon slot="start" icon={addCircleOutline} /> THÊM DANH MỤC
@@ -57,7 +58,6 @@ const AdminCategories: React.FC = () => {
                 <th>ID</th>
                 <th>Tên Danh Mục</th>
                 <th>Mô tả</th>
-
                 <th>Các lớp trực thuộc</th>
                 <th style={{ textAlign: 'center' }}>Hành động</th>
               </tr>
@@ -66,23 +66,20 @@ const AdminCategories: React.FC = () => {
               {categories?.map((cat) => (
                 <tr key={cat.category_id}>
                   <td>#{cat.category_id}</td>
-                  <td style={{ fontWeight: 'bold' }}>{cat.category_name}</td>
+                  <td className="td-bold">{cat.category_name}</td>
                   <td>{cat.description || 'Không có mô tả'}</td>
                   
-                  <td style={{ maxWidth: '300px' }}>
+                  <td className="td-max-width-300">
                     {cat.classes ? (
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
+                      <div className="badge-wrapper">
                         {cat.classes.split(',').map((className: string, index: number) => (
-                          <span key={index} style={{
-                            background: '#f3e5f5', color: '#7b1fa2', padding: '3px 8px', 
-                            borderRadius: '12px', fontSize: '12px', border: '1px solid #e1bee7'
-                          }}>
+                          <span key={index} className="badge-tag badge-purple">
                             {className.trim()}
                           </span>
                         ))}
                       </div>
                     ) : (
-                      <span style={{ color: '#999', fontStyle: 'italic' }}>Chưa có lớp học</span>
+                      <span className="text-empty-italic">Chưa có lớp học</span>
                     )}
                   </td>
 
@@ -99,7 +96,7 @@ const AdminCategories: React.FC = () => {
                 </tr>
               ))}
               {categories?.length === 0 && (
-                <tr><td colSpan={5} style={{ textAlign: 'center', padding: '30px' }}>Chưa có danh mục nào.</td></tr>
+                <tr><td colSpan={5} className="admin-table-empty">Chưa có danh mục nào.</td></tr>
               )}
             </tbody>
           </table>
@@ -113,17 +110,17 @@ const AdminCategories: React.FC = () => {
           </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">
-          <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
-            <IonLabel position="stacked">Tên danh mục <span style={{ color: 'red' }}>*</span></IonLabel>
+          <IonItem className="admin-modal-item">
+            <IonLabel position="stacked">Tên danh mục <span className="admin-required-star">*</span></IonLabel>
             <IonInput value={catName} onIonInput={e => setCatName(e.detail.value!)} placeholder="VD: Lập trình Python..." />
           </IonItem>
 
-          <IonItem style={{ marginBottom: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
+          <IonItem className="admin-modal-item">
             <IonLabel position="stacked">Mô tả (Không bắt buộc)</IonLabel>
             <IonTextarea value={catDesc} onIonInput={e => setCatDesc(e.detail.value!)} placeholder="Nhập mô tả..." rows={4} />
           </IonItem>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="admin-modal-btn-group">
             <IonButton expand="block" color="medium" fill="outline" style={{ flex: 1 }} onClick={() => setShowModal(false)}>HỦY BỎ</IonButton>
             <IonButton expand="block" color="primary" style={{ flex: 1 }} onClick={handleSave}>LƯU LẠI</IonButton>
           </div>
