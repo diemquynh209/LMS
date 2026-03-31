@@ -1,251 +1,116 @@
 .bg-gradient-blue {
-  --ion-background-color: transparent; 
-  background: linear-gradient(135deg, #012a4a 0%, #0277bd 100%); 
-  height: 100%;
+  --ion-background-color: transparent;
+  background: linear-gradient(135deg, #012a4a 0%, #0277bd 100%);
+  height: 100%; 
 }
 
-.glass-card {
-  margin: 15vh auto; 
-  width: 90%; 
-  max-width: 400px; 
-  background: rgba(255, 255, 255, 0.2); 
-  backdrop-filter: blur(12px); 
-  -webkit-backdrop-filter: blur(12px); 
-  border: 1px solid rgba(255, 255, 255, 0.4); 
-  border-radius: 20px; 
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); 
+.glass-card { 
+  margin: 15vh auto; width: 90%;
+  max-width: 400px; background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   padding: 10px;
 }
 
 .glass-title {
   color: #ffffff;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 400; font-size: 28px;
   letter-spacing: 1px;
 }
 
 .glass-input-item {
-  --background: rgba(255, 255, 255, 0.15); 
-  --border-radius: 12px;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.6); 
+  --background: rgba(255, 255, 255, 0.15);
+  --border-radius: 12px; margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 12px;
 }
 
 .glass-input-item ion-input {
-  color: #ffffff; 
+  color: #ffffff;
   --placeholder-color: rgba(255, 255, 255, 0.8);
   --padding-start: 15px !important;
-  font-size: 18px; 
-  font-weight: 500; 
+  font-size: 18px; font-weight: 500;
   --caret-color: #ffffff !important;
-  caret-color: #ffffff !important;
+  caret-color: #ffffff !important; 
 }
 
 .glass-input-item ion-input::part(native) {
   caret-color: #ffffff !important;
 }
 
-.glass-input-item ion-input .native-input {
+.glass-input-item ion-input .native-input { 
   caret-color: #ffffff !important;
 }
 
-.glass-button {
+.glass-button { 
   --background: rgba(255, 255, 255, 0.3); 
+  --color: #ffffff; 
+  --border-radius: 12px; 
+  --box-shadow: none; 
+  margin-top: 20px; 
+  font-weight: bold; 
+  letter-spacing: 1px; 
+}
+
+.transparent-toolbar { 
+  --background: transparent; 
   --color: #ffffff;
-  --border-radius: 12px;
-  --box-shadow: none;
-  margin-top: 20px;
-  font-weight: bold;
-  letter-spacing: 1px;
 }
 
-.transparent-toolbar {
-  --background: transparent;
-  --color: #ffffff;
+.white-text-btn, .text-white { color: #ffffff; }
+.text-light { color: rgba(255, 255, 255, 0.8); }
+.text-bold { font-weight: bold; }
+.profile-icon { font-size: 80px; color: #ffffff; }
+.card-heading { color: #ffffff; font-size: 20px; font-weight: bold; }
+.form-description { margin-bottom: 25px; font-size: 15px; }
+.input-spacing { margin-bottom: 20px; }
+
+.clickable-glass { 
+  cursor: pointer; 
+  transition: background 0.3s ease, 
+  transform 0.2s ease; 
 }
 
-.white-text-btn {
-  color: #ffffff;
-}
-
-.text-white {
-  color: #ffffff;
-}
-
-.text-light {
-  color: rgba(255, 255, 255, 0.8);
-}
-
-.text-bold {
-  font-weight: bold;
-}
-
-.dashboard-card {
-  margin: 20px auto;
-  max-width: 600px;
-}
-
-.admin-form-card {
-  margin-top: 5vh;
-  max-width: 500px;
-}
-
-.profile-icon {
-  font-size: 80px;
-  color: #ffffff;
-}
-
-.card-heading {
-  color: #ffffff;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.form-description {
-  margin-bottom: 25px;
-  font-size: 15px;
-}
-
-.input-spacing {
-  margin-bottom: 20px;
-}
-
-.clickable-glass {
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease; 
-}
-
-.clickable-glass:hover {
+.clickable-glass:hover { 
   background: rgba(255, 255, 255, 0.3); 
   transform: translateY(-2px); 
 }
 
-.clickable-glass:active {
-  background: rgba(255, 255, 255, 0.15);
-  transform: translateY(1px); 
-}
-
-.custom-role-select {
+.clickable-glass:active { 
   background: rgba(255, 255, 255, 0.15); 
-  border-radius: 6px;
-  padding: 4px 10px;
-  min-height: auto;
+  transform: translateY(1px);
 }
 
-.custom-role-select::part(text) {
-  color: #ffffff;
-  font-weight: bold;
-  font-size: 13px;
+.custom-role-select { 
+  background: rgba(255, 255, 255, 0.15); 
+  border-radius: 6px; 
+  padding: 4px 10px; 
+  min-height: auto; 
+}
+
+.custom-role-select::part(text) { 
+  color: #ffffff; 
+  font-weight: bold; 
+  font-size: 13px; 
 }
 
 .custom-role-select::part(icon) {
-  color: #ffffff;
-  opacity: 1; 
-  font-size: 20px; 
-}
+  color: #ffffff; 
+  opacity: 1; font-size: 20px;
+  }
 
 .glass-toolbar {
-  --background: linear-gradient(90deg, rgba(11, 36, 71, 0.85), rgba(25, 75, 140, 0.85));
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  --background: linear-gradient(90deg, rgba(11, 36, 71, 0.85), rgba(25, 75, 140, 0.85)); 
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15); 
   --color: #ffffff; 
 }
-.glass-item { --background: rgba(255, 255, 255, 0.1); --border-color: rgba(255, 255, 255, 0.2); margin-bottom: 5px; }
 
-ion-split-pane {
-  --side-width: 3300px !important; 
-  --side-min-width: 330px !important;
-  --side-max-width: 330px !important;
-}
-ion-menu::part(container), 
-.admin-sidebar {
-  --background: linear-gradient(180deg, #2A3F54 0%, #172D44 100%) !important;
-  background: linear-gradient(180deg, #2A3F54 0%, #172D44 100%) !important;
+.glass-item { 
+  --background: rgba(255, 255, 255, 0.1); 
+  --border-color: rgba(255, 255, 255, 0.2); 
+  margin-bottom: 5px; 
 }
 
-.admin-sidebar ion-list {
-  background: transparent !important;
-}
-
-ion-item.glass-menu-item {
-  --background: rgba(255, 255, 255, 0.05) !important;
-  --border-radius: 8px !important;
-  margin: 8px 15px !important; 
-  --min-height: 55px !important; 
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  --color: #ffffff !important; 
-  color: #ffffff !important;
-}
-
-ion-item.glass-menu-item ion-label {
-  color: #ffffff !important;
-}
-
-ion-item.glass-menu-item ion-icon {
-  color: #ffffff !important;
-  font-size: 22px !important; 
-}
-
-ion-item.glass-menu-item:hover {
-  --background: rgba(255, 255, 255, 0.15) !important;
-  transform: translateX(5px);
-}
-
-
-.card-stats {
-  border-radius: 5px;
-  color: white;
-  margin: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-ion-item.glass-menu-item.active-menu {
-  --background: transparent !important; 
-  border: 1px solid transparent !important; 
-  backdrop-filter: none !important; 
-  box-shadow: none !important;
-}
-
-ion-item.glass-menu-item.active-menu ion-label {
-  color: #3498DB !important; 
-}
-
-ion-item.glass-menu-item.active-menu ion-icon {
-  color: #3498DB !important; 
-}
-.admin-table-container {
-  overflow-x: auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-}
-
-.action-td-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 15px; 
-}
-
-.action-btn {
-  cursor: pointer !important; 
-  margin: 0 !important;
-  --border-radius: 50%; 
-}
-
-.action-btn ion-icon {
-  font-size: 26px !important; 
-}
-.admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-.admin-table th { background: #f4f6f8; color: #637381; padding: 15px; text-align: left; font-weight: bold; font-size: 14px; text-transform: uppercase; }
-.admin-table td { padding: 15px; border-bottom: 1px solid #f0f0f0; color: #212b36; font-size: 15px; }
-.admin-table tr:hover { background: #f9fafb; }
-.badge-active { background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-.card-red { --background: #E74C3C !important; background: #E74C3C !important; }
-.card-orange { --background: #F39C12 !important; background: #F39C12 !important; }
-.card-blue { --background: #3498DB !important; background: #3498DB !important; }
-.card-green { --background: #2ECC71 !important; background: #2ECC71 !important; }
-
-.card-stats h2 { font-size: 36px; font-weight: bold; margin: 10px 0; color: white;}
-.card-stats p { font-size: 14px; text-transform: uppercase; margin: 0; font-weight: 600;}
+.admin-form-card { margin-top: 5vh; max-width: 500px; }

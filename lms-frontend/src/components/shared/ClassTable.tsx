@@ -1,6 +1,7 @@
 import React from 'react';
 import { IonButton, IonIcon, IonSelect, IonSelectOption } from '@ionic/react';
 import { trashOutline, eyeOutline, peopleOutline } from 'ionicons/icons';
+import '../../theme/shared/table.css'
 
 interface ClassTableProps {
   classes: any[];

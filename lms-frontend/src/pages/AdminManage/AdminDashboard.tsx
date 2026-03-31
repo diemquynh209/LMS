@@ -4,6 +4,7 @@ import { schoolOutline, peopleOutline, bookOutline, warningOutline } from 'ionic
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useAdminDashboard } from '../../hooks/admin/useAdminDashboard'; 
 import AdminLayout from '../../components/AdminLayout';
+import '../../theme/pages/AdminDashboard.css';
 
 const AdminDashboard: React.FC = () => {
   const { t, stats } = useAdminDashboard(); 

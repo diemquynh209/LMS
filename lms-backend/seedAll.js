@@ -7,7 +7,6 @@ const seedAll = async () => {
         //Tạo user
         const defaultPassword = 'password123';
         const hashedPassword = await bcrypt.hash(defaultPassword, 10);
-        //Tìm id max để không trùng (nếu đã tạo trước đó)
         const [userMax] = await pool.query('SELECT MAX(user_id) as maxId FROM Users');
         let startUserIdx = (userMax[0].maxId || 0) + 1;
 
@@ -40,12 +39,15 @@ const seedAll = async () => {
 
         //category
         const categories = [
-            { name: 'Kỹ năng quản lý dự án', desc: 'Các kỹ năng mềm và quản lý quy trình dự án' },
-            { name: 'Lập trình Python', desc: 'Lập trình từ cơ bản đến nâng cao với Python' },
-            { name: 'Tiếng Anh giao tiếp', desc: 'Cải thiện kỹ năng nghe nói tiếng Anh' },
-            { name: 'Thiết kế UI/UX', desc: 'Thiết kế giao diện và trải nghiệm người dùng' },
-            { name: 'Digital Marketing', desc: 'Tiếp thị kỹ thuật số và SEO' },
-            { name: 'Phân tích dữ liệu', desc: 'Xử lý và phân tích Data khoa học' }
+            { name: 'Kinh tế', desc: '' },
+            { name: 'Toán', desc: '' },
+            { name: 'Hóa học', desc: '' },
+            { name: 'Sinh học', desc: '' },
+            { name: 'English', desc: '' },
+            { name: 'Vật lý', desc: '' },
+            { name: 'Triết học', desc: '' },
+            { name: 'CNTT', desc: '' },
+
         ];
 
         for (let cat of categories) {
@@ -79,8 +81,6 @@ const seedAll = async () => {
                 'INSERT INTO Classes (instructor_id, class_name, description, status, category_id) VALUES (?, ?, ?, ?, ?)',
                 [randomInstructorId, className, `Nội dung chi tiết cho lớp ${className}...`, status, randomCategory.category_id]
             );
-            
-            // Lưu lại id của lớp (nếu không phải là Draft) để xếp hsinh
             if (status !== 'Draft') {
                 newClassIds.push(result.insertId);
             }
@@ -91,7 +91,6 @@ const seedAll = async () => {
         const [students] = await pool.query("SELECT user_id FROM Users WHERE role = 'Student'");
         let enrollmentCount = 0;
         
-        // Kiểm tra xem có lớp mới tạo hợp lệ không
         if (newClassIds.length > 0) {
             for (let classId of newClassIds) {
                 const shuffled = students.sort(() => 0.5 - Math.random());
@@ -112,7 +111,7 @@ const seedAll = async () => {
 
 
     } catch (error) {
-        console.error("🚨 Lỗi nghiêm trọng:", error);
+        console.error(" Lỗi nghiêm trọng:", error);
     } finally {
         process.exit();
     }

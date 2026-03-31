@@ -1,45 +1,33 @@
 const pool = require('../config/db');
-const getAllReports = async (statusFilter = '') => {
-    let query = `
-        SELECT r.report_id, r.reason, r.status, r.created_at,
-               l.lesson_id, l.lesson_name,
-               u.full_name AS student_name, u.email AS student_email,
-               c.class_name
-        FROM Lesson_Reports r
-        JOIN Lessons l ON r.lesson_id = l.lesson_id
-        JOIN Chapters ch ON l.chapter_id = ch.chapter_id
-        JOIN Classes c ON ch.class_id = c.class_id
-        JOIN Users u ON r.student_id = u.user_id
-        WHERE 1=1
-    `;
-    let params = [];
 
-    if (statusFilter) {
-        query += " AND r.status = ?";
-        params.push(statusFilter);
+const LessonModel = {
+    createLesson: async (chapterId, lessonName, orderIndex) => {
+        const [result] = await pool.query(
+            'INSERT INTO Lessons (chapter_id, lesson_name, order_index) VALUES (?, ?, ?)',
+            [chapterId, lessonName, orderIndex || 0]
+        );
+        return result;
+    },
+
+    updateLessonInfo: async (lessonId, lessonName, content, videoUrl, documentUrl) => {
+        const [result] = await pool.query(
+            'UPDATE Lessons SET lesson_name = ?, content = ?, video_url = ?, document_url = ? WHERE lesson_id = ?',
+            [lessonName, content, videoUrl, documentUrl, lessonId]
+        );
+        return result;
+    },
+
+    deleteLesson: async (lessonId) => {
+        const [result] = await pool.query('DELETE FROM Lessons WHERE lesson_id = ?', [lessonId]);
+        return result;
+    },
+
+    reorderLessons: async (lessonsData) => {
+        const queries = lessonsData.map(l => 
+            pool.query('UPDATE Lessons SET chapter_id = ?, order_index = ? WHERE lesson_id = ?', [l.chapter_id, l.order_index, l.lesson_id])
+        );
+        await Promise.all(queries);
     }
-
-    query += " ORDER BY r.created_at DESC"; 
-
-    const [rows] = await pool.query(query, params);
-    return rows;
 };
 
-const updateReportStatus = async (reportId, newStatus) => {
-    const [result] = await pool.query(
-        'UPDATE Lesson_Reports SET status = ? WHERE report_id = ?',
-        [newStatus, reportId]
-    );
-    return result;
-};
-
-const deleteLesson = async (lessonId) => {
-    const [result] = await pool.query('DELETE FROM Lessons WHERE lesson_id = ?', [lessonId]);
-    return result;
-};
-
-module.exports = {
-    getAllReports,
-    updateReportStatus,
-    deleteLesson
-};
+module.exports = LessonModel;

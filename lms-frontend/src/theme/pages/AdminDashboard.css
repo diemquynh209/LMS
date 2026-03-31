@@ -1,0 +1,10 @@
+.dashboard-card { margin: 20px auto; max-width: 600px; }
+
+.card-stats { border-radius: 5px; color: white; margin: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+.card-stats h2 { font-size: 36px; font-weight: bold; margin: 10px 0; color: white;}
+.card-stats p { font-size: 14px; text-transform: uppercase; margin: 0; font-weight: 600;}
+
+.card-red { --background: #E74C3C !important; background: #E74C3C !important; }
+.card-orange { --background: #F39C12 !important; background: #F39C12 !important; }
+.card-blue { --background: #3498DB !important; background: #3498DB !important; }
+.card-green { --background: #2ECC71 !important; background: #2ECC71 !important; }

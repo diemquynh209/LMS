@@ -127,3 +127,27 @@ CREATE TABLE IF NOT EXISTS Student_Wrong_Answers (
     FOREIGN KEY (question_id) REFERENCES Questions(question_id) ON DELETE CASCADE,
     UNIQUE(student_id, question_id)
 );
+
+CREATE TABLE IF NOT EXISTS Assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    lesson_id INT NOT NULL, 
+    title VARCHAR(255) NOT NULL,
+    description TEXT, 
+    due_date DATETIME NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (lesson_id) REFERENCES Lessons(lesson_id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS Assignment_Submissions (
+    submission_id INT AUTO_INCREMENT PRIMARY KEY,
+    assignment_id INT NOT NULL,
+    student_id INT NOT NULL,
+    file_url VARCHAR(500) NOT NULL, 
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    grade DECIMAL(5,2) NULL, 
+    feedback TEXT NULL, 
+    status ENUM('Submitted', 'Late', 'Graded') DEFAULT 'Submitted', 
+    FOREIGN KEY (assignment_id) REFERENCES Assignments(assignment_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+    UNIQUE(assignment_id, student_id)
+);

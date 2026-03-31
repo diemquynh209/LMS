@@ -1,15 +1,16 @@
 import React from 'react';
 import { IonButton, IonIcon } from '@ionic/react';
-import { trashOutline, arrowUpCircleOutline } from 'ionicons/icons';
+import { trashOutline, arrowUpCircleOutline, exitOutline } from 'ionicons/icons'; // Thêm exitOutline làm icon kick
 
 interface StudentTableProps {
   students: any[];
   role: 'Admin' | 'Instructor';
   onRoleChange?: (userId: number, fullName: string, currentRole: string, newRole: string) => void;
   onDelete?: (userId: number, fullName: string) => void;
+  onKick?: (userId: number, fullName: string) => void; 
 }
 
-const StudentTable: React.FC<StudentTableProps> = ({ students, role, onRoleChange, onDelete }) => {
+const StudentTable: React.FC<StudentTableProps> = ({ students, role, onRoleChange, onDelete, onKick }) => {
   return (
     <div className="admin-table-container">
       <table className="admin-table">
@@ -21,8 +22,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, role, onRoleChang
             <th>Email</th>
             <th>Số điện thoại</th>
             <th>Trạng thái</th>
-            {/* Chỉ Admin mới Nâng cấp/Xóa */}
-            {role === 'Admin' && <th style={{ textAlign: 'center' }}>Hành động</th>}
+            <th style={{ textAlign: 'center' }}>Hành động</th>
           </tr>
         </thead>
         <tbody>
@@ -52,23 +52,32 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, role, onRoleChang
               <td>{st.phone || 'Chưa cập nhật'}</td>
               <td><span className="badge-active">Hoạt động</span></td>
               
-              {/* Chỉ hiển thị nút nếu là Admin */}
-              {role === 'Admin' && onRoleChange && onDelete && (
-                <td>
-                  <div className="action-td-container">
-                    <IonButton className="action-btn" color="success" fill="clear" onClick={() => onRoleChange(st.user_id, st.full_name, st.role, 'Instructor')} title="Nâng cấp">
-                      <IonIcon slot="icon-only" icon={arrowUpCircleOutline} />
+              <td>
+                <div className="action-td-container">
+                  {/* Dành riêng cho Admin */}
+                  {role === 'Admin' && onRoleChange && onDelete && (
+                    <>
+                      <IonButton className="action-btn" color="success" fill="clear" onClick={() => onRoleChange(st.user_id, st.full_name, st.role, 'Instructor')} title="Nâng cấp">
+                        <IonIcon slot="icon-only" icon={arrowUpCircleOutline} />
+                      </IonButton>
+                      <IonButton className="action-btn" color="danger" fill="clear" onClick={() => onDelete(st.user_id, st.full_name)} title="Xóa tài khoản">
+                        <IonIcon slot="icon-only" icon={trashOutline} />
+                      </IonButton>
+                    </>
+                  )}
+
+                  {/*Dành riêng cho Instructor */}
+                  {role === 'Instructor' && onKick && (
+                    <IonButton className="action-btn" color="warning" fill="clear" onClick={() => onKick(st.user_id, st.full_name)} title="Kick khỏi lớp">
+                      <IonIcon slot="icon-only" icon={exitOutline} />
                     </IonButton>
-                    <IonButton className="action-btn" color="danger" fill="clear" onClick={() => onDelete(st.user_id, st.full_name)} title="Xóa">
-                      <IonIcon slot="icon-only" icon={trashOutline} />
-                    </IonButton>
-                  </div>
-                </td>
-              )}
+                  )}
+                </div>
+              </td>
             </tr>
           ))}
           {students?.length === 0 && (
-            <tr><td colSpan={role === 'Admin' ? 7 : 6} style={{ textAlign: 'center', padding: '30px' }}>Không tìm thấy học viên nào.</td></tr>
+            <tr><td colSpan={7} style={{ textAlign: 'center', padding: '30px' }}>Không tìm thấy học viên nào.</td></tr>
           )}
         </tbody>
       </table>

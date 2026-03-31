@@ -5,18 +5,17 @@ import {
   IonButtons, IonButton, IonMenuButton, IonMenuToggle 
 } from '@ionic/react';
 import { 
-  schoolOutline, peopleOutline, bookOutline, documentTextOutline, 
-  notificationsOutline, gridOutline, logOutOutline, menuOutline
+  schoolOutline, bookOutline, notificationsOutline, gridOutline, 
+  logOutOutline, menuOutline, folderOpenOutline
 } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router-dom';
-import '../theme/layouts/AdminLayout.css';
-
-interface AdminLayoutProps {
+import '../theme/layouts/InstructorLayout.css';
+interface InstructorLayoutProps {
   children: React.ReactNode;
   pageTitle: string;
 }
 
-const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
+const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle }) => {
   const history = useHistory();
   const location = useLocation();
 
@@ -26,9 +25,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
   };
 
   return (
-    <IonSplitPane contentId="main-content">
-      <IonMenu contentId="main-content" type="overlay" menuId="admin-menu">
-        <IonContent className="admin-sidebar">     
+    <IonSplitPane contentId="instructor-main-content">
+      <IonMenu contentId="instructor-main-content" type="overlay" menuId="instructor-menu">
+        <IonContent className="instructor-sidebar">     
           <div style={{ padding: '15px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -37,7 +36,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
                 alt="Logo" 
                 style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
               />
-              <h2 style={{ color: 'white', fontWeight: 'bold', margin: 0, fontSize: '20px' }}>Administrator</h2>
+              <h2 style={{ color: 'white', fontWeight: 'bold', margin: 0, fontSize: '20px' }}>Instructor</h2>
             </div>
 
             <IonMenuToggle autoHide={false}>
@@ -49,44 +48,30 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
 
           <IonList style={{ background: 'transparent', marginTop: '10px' }}>           
             <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-dashboard" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-dashboard' ? 'active-menu' : ''}`}>
+              <IonItem button routerLink="/instructor-dashboard" routerDirection="root" className={`glass-menu-item ${location.pathname === '/instructor-dashboard' ? 'active-menu' : ''}`}>
                 <IonIcon slot="start" icon={gridOutline} />
-                <IonLabel>Quản lý chung</IonLabel>
+                <IonLabel>Bảng điều khiển</IonLabel>
               </IonItem>
             </IonMenuToggle>
 
             <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-students" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-students' ? 'active-menu' : ''}`}>
-                <IonIcon slot="start" icon={peopleOutline} />
-                <IonLabel>Quản lý học viên</IonLabel>
-              </IonItem>
-            </IonMenuToggle>
-
-            <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-instructors" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-instructors' ? 'active-menu' : ''}`}>
-                <IonIcon slot="start" icon={schoolOutline} />
-                <IonLabel>Quản lý giảng viên</IonLabel>
-              </IonItem>
-            </IonMenuToggle>
-
-            <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-classes" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-classes' ? 'active-menu' : ''}`}>
+              <IonItem button routerLink="/instructor-classes" routerDirection="root" className={`glass-menu-item ${location.pathname.includes('/instructor-classes') ? 'active-menu' : ''}`}>
                 <IonIcon slot="start" icon={bookOutline} />
-                <IonLabel>Quản lý lớp học</IonLabel>
+                <IonLabel>Lớp học của tôi</IonLabel>
               </IonItem>
             </IonMenuToggle>
 
             <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-categories" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-categories' ? 'active-menu' : ''}`}>
-                <IonIcon slot="start" icon={documentTextOutline} />
-                <IonLabel>Quản lý danh mục</IonLabel>
+              <IonItem button routerLink="/instructor-question-bank" routerDirection="root" className={`glass-menu-item ${location.pathname.includes('/instructor-question-bank') ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={folderOpenOutline} />
+                <IonLabel>Ngân hàng câu hỏi</IonLabel>
               </IonItem>
             </IonMenuToggle>
 
             <IonMenuToggle autoHide={false}>
-              <IonItem button routerLink="/admin-notifications" routerDirection="root" className={`glass-menu-item ${location.pathname === '/admin-notifications' ? 'active-menu' : ''}`}>
+              <IonItem button routerLink="/instructor-notifications" routerDirection="root" className={`glass-menu-item ${location.pathname === '/instructor-notifications' ? 'active-menu' : ''}`}>
                 <IonIcon slot="start" icon={notificationsOutline} />
-                <IonLabel>Quản lý thông báo</IonLabel>
+                <IonLabel>Thông báo</IonLabel>
               </IonItem>
             </IonMenuToggle>
 
@@ -94,11 +79,11 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
         </IonContent>
       </IonMenu>
 
-      <IonPage id="main-content">
+      <IonPage id="instructor-main-content">
         <IonHeader className="ion-no-border">
           <IonToolbar color="light">
             <IonButtons slot="start">
-              <IonMenuButton menu="admin-menu" />
+              <IonMenuButton menu="instructor-menu" />
             </IonButtons>      
             <IonTitle>{pageTitle}</IonTitle>      
             <IonButtons slot="end">
@@ -114,7 +99,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
           </IonToolbar>
         </IonHeader>
 
-        <IonContent style={{ '--background': '#ECF0F5' }}>
+        <IonContent style={{ '--background': '#F4F6F8' }}>
           {children}
         </IonContent>
       </IonPage>
@@ -122,4 +107,4 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children, pageTitle }) => {
   );
 };
 
-export default AdminLayout;
+export default InstructorLayout;

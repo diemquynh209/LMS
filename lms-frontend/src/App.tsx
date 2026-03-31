@@ -1,15 +1,22 @@
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+
+// Các trang chung
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+
+// Các trang của Admin
 import AdminInstructors from './pages/AdminManage/AdminInstructors';
 import AdminStudents from './pages/AdminManage/AdminStudents';
 import AdminDashboard from './pages/AdminManage/AdminDashboard';
 import AdminClasses from './pages/AdminManage/AdminClasses';
 import AdminCategories from './pages/AdminManage/AdminCategories';
 import AdminNotifications from './pages/AdminManage/AdminNotifications';
+
+import InstructorClasses from './pages/InstructorManage/InstructorClasses';
+import InstructorStudents from './pages/InstructorManage/InstructorStudents';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -22,6 +29,7 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 import './theme/global.css';
+
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -38,19 +46,19 @@ const App: React.FC = () => (
         </Route>
 
         <Route exact path="/dashboard">
-            <Dashboard />
-          </Route>
-
-        <Route exact path="/admin-dashboard">
-            <AdminDashboard />
-        </Route>
-        
-        <Route exact path="/admin-instructors">
-          <AdminInstructors />
+          <Dashboard />
         </Route>
 
         <Route exact path="/">
           <Redirect to="/login" />
+        </Route>
+
+        <Route exact path="/admin-dashboard">
+          <AdminDashboard />
+        </Route>
+        
+        <Route exact path="/admin-instructors">
+          <AdminInstructors />
         </Route>
 
         <Route exact path="/admin-students">
@@ -66,13 +74,20 @@ const App: React.FC = () => (
         </Route>
 
         <Route exact path="/admin-notifications">
-          < AdminNotifications/>
+          <AdminNotifications />
+        </Route>
+
+        <Route exact path="/instructor-classes">
+          <InstructorClasses />
+        </Route>
+
+        <Route exact path="/instructor-students">
+          <InstructorStudents />
         </Route>
         
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>
 );
-
 
 export default App;

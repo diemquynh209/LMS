@@ -1,0 +1,41 @@
+ion-split-pane {
+  --side-width: 3300px !important; 
+  --side-min-width: 330px !important;
+  --side-max-width: 330px !important;
+}
+
+ion-menu::part(container), 
+.admin-sidebar {
+  --background: linear-gradient(180deg, #2A3F54 0%, #172D44 100%) !important;
+  background: linear-gradient(180deg, #2A3F54 0%, #172D44 100%) !important;
+}
+
+.admin-sidebar ion-list {
+  background: transparent !important;
+}
+
+/* Các nút menu bên Sidebar Admin */
+ion-item.glass-menu-item {
+  --background: rgba(255, 255, 255, 0.05) !important;
+  --border-radius: 8px !important;
+  margin: 8px 15px !important; 
+  --min-height: 55px !important; 
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  --color: #ffffff !important; 
+  color: #ffffff !important;
+}
+ion-item.glass-menu-item ion-label, ion-item.glass-menu-item ion-icon { color: #ffffff !important; }
+ion-item.glass-menu-item ion-icon { font-size: 22px !important; }
+
+ion-item.glass-menu-item:hover {
+  --background: rgba(255, 255, 255, 0.15) !important;
+  transform: translateX(5px);
+}
+
+ion-item.glass-menu-item.active-menu {
+  --background: transparent !important; 
+  border: 1px solid transparent !important; 
+  backdrop-filter: none !important; 
+  box-shadow: none !important;
+}
+ion-item.glass-menu-item.active-menu ion-label, ion-item.glass-menu-item.active-menu ion-icon { color: #3498DB !important; }

@@ -1,0 +1,29 @@
+ion-menu[menu-id="instructor-menu"]::part(container),
+.instructor-sidebar {
+  --background: linear-gradient(180deg, #2b2e33 0%, #0a0a0b 100%) !important;
+  background: linear-gradient(180deg, #2b2e33 0%, #0a0a0b 100%) !important;
+}
+
+.instructor-sidebar ion-list {
+  background: transparent !important;
+}
+
+ion-menu[menu-id="instructor-menu"] ion-item.glass-menu-item.active-menu ion-label,
+ion-menu[menu-id="instructor-menu"] ion-item.glass-menu-item.active-menu ion-icon {
+  color: #BBDEFB !important; 
+}
+
+ion-content.instructor-main-content {
+  --background: #f4f6f8 !important; 
+  background: #f4f6f8 !important;
+}
+
+ion-content.instructor-main-content > * {
+  background: #ffffff;
+  border-radius: 20px; 
+  margin: 20px; 
+  padding: 10px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important; 
+  
+  display: block;
+}

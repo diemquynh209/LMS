@@ -1,0 +1,159 @@
+.page-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 30px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.btn-create-class {
+  --border-radius: 8px;
+  font-weight: bold;
+}
+
+.transparent-content {
+  --background: transparent;
+}
+
+.empty-state-container {
+  text-align: center;
+  margin-top: 50px;
+  color: #666;
+}
+
+.empty-state-icon {
+  font-size: 60px;
+  opacity: 0.5;
+}
+
+.error-state {
+  color: red;
+}
+
+.course-grid {
+  padding: 10px 30px; 
+}
+
+.course-col {
+  padding: 15px; 
+}
+
+.course-card {
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: white;
+  margin: 0 auto; 
+  max-width: 380px; 
+  overflow: hidden;
+  border: 1px solid #f0f0f0;
+}
+
+.course-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+}
+
+.course-gradient-header {
+  height: 140px;
+  width: 100%;
+  position: relative;
+  background: linear-gradient(135deg, #012a4a 0%, #0277bd 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.course-header-icon {
+  font-size: 70px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.course-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  --background: rgba(255, 255, 255, 0.2);
+  --color: #ffffff;
+  backdrop-filter: blur(8px);
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.course-content-pad {
+  padding: 15px 15px 5px 15px;
+}
+
+.course-category-text {
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.course-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin: 8px 0;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.course-stats-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+.course-stats-icon {
+  color: #7f8c8d;
+}
+
+.course-stats-text {
+  font-size: 13px;
+}
+
+/* --- Các Nút Hành động trong Thẻ --- */
+.course-actions-container {
+  display: flex;
+  gap: 10px;
+  padding: 15px;
+}
+
+.btn-glass-action {
+  flex: 1;
+  --background: rgba(2, 119, 189, 0.08); 
+  --color: #0277bd;
+  --border-radius: 8px;
+  --box-shadow: none;
+  font-weight: bold;
+  font-size: 13px;
+  margin: 0;
+}
+
+.btn-glass-action:hover {
+  --background: rgba(2, 119, 189, 0.15);
+}
+
+.btn-glass-action.btn-orange {
+  --color: #E67E22;
+  --background: rgba(230, 126, 34, 0.08);
+}
+
+.btn-glass-action.btn-orange:hover {
+  --background: rgba(230, 126, 34, 0.15);
+}

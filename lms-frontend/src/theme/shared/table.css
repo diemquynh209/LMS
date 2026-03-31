@@ -1,0 +1,17 @@
+.admin-table-container {
+  overflow-x: auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.admin-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+.admin-table th { background: #f4f6f8; color: #637381; padding: 15px; text-align: left; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+.admin-table td { padding: 15px; border-bottom: 1px solid #f0f0f0; color: #212b36; font-size: 15px; }
+.admin-table tr:hover { background: #f9fafb; }
+
+.action-td-container { display: flex; justify-content: center; align-items: center; gap: 15px; }
+.action-btn { cursor: pointer !important; margin: 0 !important; --border-radius: 50%; }
+.action-btn ion-icon { font-size: 26px !important; }
+
+.badge-active { background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
