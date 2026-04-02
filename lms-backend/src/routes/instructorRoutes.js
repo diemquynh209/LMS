@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const instructorController = require('../controllers/instructorController');
+const uploadCloud = require('../middlewares/uploadCloud');
 
 router.get('/classes', instructorController.getMyClasses);
 router.post('/classes', instructorController.createClass);
@@ -21,6 +22,9 @@ router.delete('/chapters/:id', instructorController.deleteChapter);
 router.post('/lessons', instructorController.createLesson);
 router.put('/lessons/:id', instructorController.updateLesson);
 router.delete('/lessons/:id', instructorController.deleteLesson);
+router.post('/lessons/:id/upload-document', uploadCloud.single('document'), instructorController.uploadLessonDocument);
+router.get('/lessons/:id', instructorController.getLesson);
+router.put('/lesson/:id/approve-summary', instructorController.approveAISummary);
 
 router.get('/lessons/:lessonId/questions', instructorController.getQuestions);
 router.post('/questions', instructorController.createQuestion);

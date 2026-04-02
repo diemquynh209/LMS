@@ -15,8 +15,11 @@ import AdminClasses from './pages/AdminManage/AdminClasses';
 import AdminCategories from './pages/AdminManage/AdminCategories';
 import AdminNotifications from './pages/AdminManage/AdminNotifications';
 
+//Các trang của Instructor
 import InstructorClasses from './pages/InstructorManage/InstructorClasses';
 import InstructorStudents from './pages/InstructorManage/InstructorStudents';
+import CourseBuilder from './pages/InstructorManage/CourseBuilder';
+import LessonEditor from './pages/InstructorManage/LessonEditor'
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -56,7 +59,7 @@ const App: React.FC = () => (
         <Route exact path="/admin-dashboard">
           <AdminDashboard />
         </Route>
-        
+
         <Route exact path="/admin-instructors">
           <AdminInstructors />
         </Route>
@@ -81,10 +84,18 @@ const App: React.FC = () => (
           <InstructorClasses />
         </Route>
 
-        <Route exact path="/instructor-students">
+        <Route exact path="/instructor/students/:id">
           <InstructorStudents />
         </Route>
-        
+
+        <Route exact path="/instructor/course-builder/:id">
+          <CourseBuilder />
+        </Route>
+
+        <Route exact path="/instructor/lesson-editor/:id">
+          <LessonEditor />
+        </Route>
+
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

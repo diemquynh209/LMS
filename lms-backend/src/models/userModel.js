@@ -64,7 +64,32 @@ const UserModel = {
         query += " GROUP BY u.user_id";
         const [rows] = await pool.query(query, params);
         return rows;
-    }
+    },
+
+    checkDuplicateInfo: async (email, phone, userId) => {
+        const [rows] = await pool.query(
+            'SELECT * FROM Users WHERE (email = ? OR phone = ?) AND user_id != ?',
+            [email, phone, userId]
+        );
+        return rows;
+    },
+
+    updateProfile: async (userId, fullName, email, phone, avatarUrl) => {
+        let query = 'UPDATE Users SET full_name = ?, email = ?, phone = ?';
+        let params = [fullName, email, phone];
+
+        // Nếu có upload ảnh mới thì mới update cột avatar_url
+        if (avatarUrl) {
+            query += ', avatar_url = ?';
+            params.push(avatarUrl);
+        }
+
+        query += ' WHERE user_id = ?';
+        params.push(userId);
+
+        const [result] = await pool.query(query, params);
+        return result;
+    },
 };
 
 module.exports = UserModel;

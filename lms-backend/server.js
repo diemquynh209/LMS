@@ -3,6 +3,7 @@ const authRoutes = require('./src/routes/authRoutes');
 const adminRoutes = require('./src/routes/adminRoutes');
 const instructorRoutes = require('./src/routes/instructorRoutes');
 const notificationRoutes = require('./src/routes/notificationRoutes');
+const userRoutes = require('./src/routes/userRoutes');
 const express = require('express');
 const cors = require('cors');
 const db = require('./src/config/db');
@@ -13,6 +14,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/instructor', instructorRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/users',userRoutes);
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);

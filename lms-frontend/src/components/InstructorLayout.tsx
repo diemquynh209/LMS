@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   IonContent, IonPage, IonSplitPane, IonMenu, IonList, IonItem, 
   IonIcon, IonLabel, IonHeader, IonToolbar, IonTitle,
@@ -6,10 +6,12 @@ import {
 } from '@ionic/react';
 import { 
   schoolOutline, bookOutline, notificationsOutline, gridOutline, 
-  logOutOutline, menuOutline, folderOpenOutline
+  logOutOutline, menuOutline, folderOpenOutline, personCircleOutline 
 } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router-dom';
 import '../theme/layouts/InstructorLayout.css';
+import UserProfileModal from './UserProfileModal'; // <-- IMPORT MODAL TẠI ĐÂY
+
 interface InstructorLayoutProps {
   children: React.ReactNode;
   pageTitle: string;
@@ -18,10 +20,39 @@ interface InstructorLayoutProps {
 const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle }) => {
   const history = useHistory();
   const location = useLocation();
+  
+  // State lưu thông tin người dùng
+  const [userName, setUserName] = useState('Giảng viên');
+  const [userAvatar, setUserAvatar] = useState('');
+  
+  // State quản lý việc ẩn/hiện Modal cập nhật hồ sơ
+  const [showProfileModal, setShowProfileModal] = useState(false);
+
+  // Lấy thông tin user từ localStorage khi component render
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      try {
+        const userObj = JSON.parse(storedUser);
+        if (userObj) {
+          setUserName(userObj.full_name || 'Giảng viên');
+          setUserAvatar(userObj.avatar_url || '');
+        }
+      } catch (error) {
+        console.error("Lỗi đọc thông tin user", error);
+      }
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
     history.replace('/login');
+  };
+
+  // Hàm này chạy khi Modal báo "Cập nhật thành công", giúp UI thay đổi tức thì
+  const handleProfileUpdated = (newUser: any) => {
+    setUserName(newUser.full_name);
+    setUserAvatar(newUser.avatar_url);
   };
 
   return (
@@ -86,16 +117,39 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
               <IonMenuButton menu="instructor-menu" />
             </IonButtons>      
             <IonTitle>{pageTitle}</IonTitle>      
-            <IonButtons slot="end">
-              <IonButton 
-                onClick={handleLogout} 
-                color="danger" 
-                style={{ fontWeight: 'bold', fontSize: '15px', textTransform: 'none', marginRight: '10px' }}
+            
+            <div slot="end" className="header-right-actions">
+              
+              {/* KHU VỰC AVATAR CÓ THỂ CLICK ĐỂ MỞ MODAL */}
+              <div 
+                className="user-profile-badge" 
+                onClick={() => setShowProfileModal(true)} 
+                style={{ cursor: 'pointer' }}
+                title="Cập nhật hồ sơ"
               >
-                <IonIcon slot="start" icon={logOutOutline} style={{ fontSize: '22px' }}/> 
-                Đăng xuất
+                {userAvatar ? (
+                  <img 
+                    src={userAvatar} 
+                    alt="Avatar" 
+                    style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }} 
+                  />
+                ) : (
+                  <IonIcon icon={personCircleOutline} className="user-avatar" />
+                )}
+                <span className="user-name">{userName}</span>
+              </div>
+
+              <IonButton 
+                fill="clear" 
+                color="danger" 
+                onClick={handleLogout} 
+                title="Đăng xuất" 
+                className="btn-logout-icon"
+              >
+                <IonIcon slot="icon-only" icon={logOutOutline} />
               </IonButton>
-            </IonButtons>      
+            </div>
+            
           </IonToolbar>
         </IonHeader>
 
@@ -103,6 +157,13 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
           {children}
         </IonContent>
       </IonPage>
+
+      <UserProfileModal 
+        isOpen={showProfileModal} 
+        onClose={() => setShowProfileModal(false)} 
+        onProfileUpdated={handleProfileUpdated} 
+      />
+
     </IonSplitPane>
   );
 };

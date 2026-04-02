@@ -1,10 +1,12 @@
+const pool = require('../config/db');
 const ClassModel = require('../models/classModel');
 const ChapterModel = require('../models/chapterModel');
 const LessonModel = require('../models/lessonModel');
 const QuestionModel = require('../models/questionModel');
 const AssignmentModel = require('../models/assignmentModel');
-const SubmissionModel = require('../models/submissionModel'); // Thêm Model này
+const SubmissionModel = require('../models/submissionModel');
 const CategoryModel = require('../models/categoryModel');
+const AIService = require('../services/AIService');
 
 const instructorController = {
     //class
@@ -160,6 +162,93 @@ const instructorController = {
             res.status(200).json({ message: "Cập nhật thứ tự bài học thành công!" });
         } catch (error) {
             res.status(500).json({ message: "Lỗi server khi sắp xếp bài học." });
+        }
+    },
+
+    uploadLessonDocument: async (req, res) => {
+        try {
+            const lessonId = req.params.id;
+            
+            //Kiểm tra xem file đã được up lên Cloudinary chưa
+            if (!req.file || !req.file.path) {
+                return res.status(400).json({ message: "Không tìm thấy file tải lên!" });
+            }
+
+            const newDocumentUrl = req.file.path; 
+
+            const [rows] = await pool.query('SELECT * FROM Lessons WHERE lesson_id = ?', [lessonId]);
+            if (rows.length === 0) {
+                return res.status(404).json({ message: "Không tìm thấy bài học!" });
+            }
+            const currentLesson = rows[0];
+
+            //Dọn rác cloudinary
+            if (currentLesson.document_url && currentLesson.document_url.includes('cloudinary')) {
+                try {
+                    // Cắt lấy đường dẫn public_id 
+                    const parts = currentLesson.document_url.split('/upload/');
+                    if (parts.length > 1) {
+                        const pathString = parts[1].split('/').slice(1).join('/'); 
+                        let publicId = pathString;
+                        let resType = 'raw';
+                        if (currentLesson.document_url.includes('/image/upload/')) {
+                            publicId = pathString.substring(0, pathString.lastIndexOf('.'));
+                            resType = 'image';
+                        }
+                        
+                        await cloudinary.uploader.destroy(publicId, { resource_type: resType });
+                        console.log("Đã dọn dẹp file cũ trên mây:", publicId);
+                    }
+                } catch (err) {
+                    console.error("Lỗi khi xóa file cũ (Bỏ qua):", err); 
+                }
+            }
+            
+            await LessonModel.updateLessonInfo(
+                lessonId, 
+                currentLesson.lesson_name, 
+                currentLesson.content, 
+                currentLesson.video_url, 
+                newDocumentUrl 
+            ); 
+
+            await LessonModel.updateAIStatus(lessonId, null, 'processing');
+            AIService.generateSummary(lessonId, newDocumentUrl);
+            res.status(200).json({ 
+                message: "Tải lên tài liệu thành công! Hệ thống AI đang tự động đọc và tóm tắt tài liệu, vui lòng chờ trong giây lát.", 
+                document_url: newDocumentUrl 
+            });
+
+        } catch (error) {
+            console.error("Lỗi upload Cloudinary:", error);
+            res.status(500).json({ message: "Lỗi server khi upload file." });
+        }
+    },
+
+    getLesson: async (req, res) => {
+        try {
+            const LessonModel = require('../models/lessonModel');
+            const lesson = await LessonModel.getLessonById(req.params.id);
+            if (!lesson) return res.status(404).json({ message: "Không tìm thấy bài học" });
+            res.status(200).json(lesson);
+        } catch (error) {
+            res.status(500).json({ message: "Lỗi server khi lấy bài học" });
+        }
+    },
+
+    approveAISummary: async (req, res) => {
+        try {
+            const lessonId = req.params.id;
+            const { finalSummary } = req.body;
+
+            await LessonModel.updateAIStatus(lessonId, finalSummary, 'published');
+
+            res.status(200).json({ 
+                message: "Đã duyệt tóm tắt thành công! Học sinh đã có thể xem nội dung này." 
+            });
+        } catch (error) {
+            console.error("Lỗi duyệt bài:", error);
+            res.status(500).json({ message: "Lỗi server khi duyệt bài." });
         }
     },
 

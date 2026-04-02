@@ -27,6 +27,28 @@ const LessonModel = {
             pool.query('UPDATE Lessons SET chapter_id = ?, order_index = ? WHERE lesson_id = ?', [l.chapter_id, l.order_index, l.lesson_id])
         );
         await Promise.all(queries);
+    },
+    
+    getLessonById: async (lessonId) => {
+    const [rows] = await pool.query('SELECT * FROM Lessons WHERE lesson_id = ?', [lessonId]);
+    return rows[0];
+    },
+
+    //Hàm cập nhật trạng thái AI và nội dung tóm tắt
+    updateAIStatus: async (lessonId, summary, status) => {
+        const [result] = await pool.query(
+            'UPDATE Lessons SET ai_summary = ?, ai_status = ? WHERE lesson_id = ?',
+            [summary, status, lessonId]
+        );
+        return result;
+    },
+    
+    updateLessonDocument: async (lessonId, documentUrl, status) => {
+        const [result] = await pool.query(
+            'UPDATE Lessons SET document_url = ?, ai_status = ? WHERE lesson_id = ?',
+            [documentUrl, status, lessonId]
+        );
+        return result;
     }
 };
 

@@ -157,3 +157,27 @@
 .btn-glass-action.btn-orange:hover {
   --background: rgba(230, 126, 34, 0.15);
 }
+
+.modal-form-item {
+  margin-bottom: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.modal-form-item.mb-20 {
+  margin-bottom: 20px;
+}
+
+.required-asterisk {
+  color: red;
+}
+
+.modal-btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-btn-flex {
+  flex: 1;
+  margin: 0;
+}

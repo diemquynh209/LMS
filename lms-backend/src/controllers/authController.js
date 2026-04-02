@@ -63,7 +63,7 @@ const authController = {
                 return res.status(400).json({ message: "Email hoặc mật khẩu không đúng" });
             }
             const payload = {
-                id: user.user_id, // Lưu ý: id trong db của bạn là user_id
+                id: user.user_id, 
                 role: user.role
             };
             const token = jwt.sign(
@@ -74,7 +74,14 @@ const authController = {
             return res.status(200).json({
                 message: "Đăng nhập thành công",
                 token: token,
-                user: { id: user.user_id, full_name: user.full_name, email: user.email, role: user.role }
+                user: { 
+                    id: user.user_id, 
+                    full_name: user.full_name, 
+                    email: user.email, 
+                    phone: user.phone, 
+                    avatar_url: user.avatar_url,
+                    role: user.role 
+                }
             });
         } catch (error) {
             console.error("Lỗi đăng nhập:", error);

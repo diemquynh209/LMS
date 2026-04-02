@@ -12,6 +12,9 @@ CREATE TABLE IF NOT EXISTS Users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+ALTER TABLE Users 
+ADD COLUMN avatar_url VARCHAR(500) DEFAULT NULL;
+
 CREATE TABLE IF NOT EXISTS Classes (
     class_id INT AUTO_INCREMENT PRIMARY KEY,
     instructor_id INT NOT NULL,
@@ -51,6 +54,10 @@ CREATE TABLE IF NOT EXISTS Lessons (
     order_index INT DEFAULT 0,
     FOREIGN KEY (chapter_id) REFERENCES Chapters(chapter_id) ON DELETE CASCADE
 );
+
+ALTER TABLE Lessons 
+ADD COLUMN ai_summary TEXT DEFAULT NULL,
+ADD COLUMN ai_status ENUM('none', 'processing', 'pending_review', 'published') DEFAULT 'none';
 
 CREATE TABLE Instructor_Invites (
     invite_id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,0 +1,164 @@
+.lesson-editor-wrapper {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+.lesson-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.center-spinner {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.editor-card {
+  margin: 0 0 20px 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.editor-card-header {
+  background: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
+
+.editor-card-title {
+  font-size: 18px;
+}
+
+.editor-card-content {
+  padding: 20px;
+}
+
+.text-red {
+  color: red;
+}
+
+.upload-zone {
+  border: 1px dashed #0277bd;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  background: #f0f8ff;
+}
+
+.upload-icon {
+  font-size: 40px;
+  color: #0277bd;
+  margin-bottom: 10px;
+}
+
+.upload-title {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.upload-success-box {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #e8f5e9;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.upload-success-link {
+  color: #2e7d32;
+  font-weight: bold;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.upload-hint {
+  font-size: 12px;
+  color: #666;
+  margin-top: 10px;
+}
+
+.ai-card {
+  margin: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 2px solid transparent; 
+}
+
+.ai-card.pending-review {
+  border: 2px solid #ffc107;
+}
+
+.ai-card-title {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-processing-box {
+  padding: 15px;
+  background: #fff3cd;
+  border-radius: 8px;
+  color: #856404;
+  display: flex;
+  align-items: center;
+}
+
+.ai-pending-box {
+  padding: 15px;
+  background: #fffbeb;
+  border-radius: 8px;
+}
+
+.ai-published-box {
+  padding: 15px;
+  background: #e8f5e9;
+  border-radius: 8px;
+}
+
+.ai-alert-text {
+  font-weight: bold;
+  color: #d39e00;
+  margin-top: 0;
+  font-size: 15px;
+}
+
+.ai-success-text {
+  color: #28a745;
+  font-weight: bold;
+  margin-top: 0;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ai-textarea-wrapper {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  padding: 5px;
+}
+
+.ai-textarea-wrapper.published {
+  border-color: #c8e6c9;
+}
+
+.ai-textarea {
+  padding: 10px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.mt-15 {
+  margin-top: 15px;
+}
+
+.mr-15 {
+  margin-right: 15px;
+}

@@ -24,6 +24,40 @@ ion-content.instructor-main-content > * {
   margin: 20px; 
   padding: 10px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important; 
-  
   display: block;
+}
+
+.header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+  margin-right: 15px;
+}
+
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f4f5f8; 
+  padding: 6px 14px;
+  border-radius: 20px; 
+  border: 1px solid #e0e0e0;
+}
+
+.user-avatar {
+  font-size: 22px;
+  color: #3880ff; 
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.btn-logout-icon {
+  margin: 0;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  font-size: 22px;
 }
