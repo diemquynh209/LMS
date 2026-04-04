@@ -6,11 +6,11 @@ import {
 } from '@ionic/react';
 import { 
   schoolOutline, bookOutline, notificationsOutline, gridOutline, 
-  logOutOutline, menuOutline, folderOpenOutline, personCircleOutline 
+  logOutOutline, menuOutline, folderOpenOutline, personCircleOutline, peopleOutline // <-- Đã thêm peopleOutline
 } from 'ionicons/icons';
 import { useHistory, useLocation } from 'react-router-dom';
 import '../theme/layouts/InstructorLayout.css';
-import UserProfileModal from './UserProfileModal'; // <-- IMPORT MODAL TẠI ĐÂY
+import UserProfileModal from './UserProfileModal';
 
 interface InstructorLayoutProps {
   children: React.ReactNode;
@@ -21,14 +21,10 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
   const history = useHistory();
   const location = useLocation();
   
-  // State lưu thông tin người dùng
   const [userName, setUserName] = useState('Giảng viên');
   const [userAvatar, setUserAvatar] = useState('');
-  
-  // State quản lý việc ẩn/hiện Modal cập nhật hồ sơ
   const [showProfileModal, setShowProfileModal] = useState(false);
 
-  // Lấy thông tin user từ localStorage khi component render
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
@@ -49,7 +45,6 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
     history.replace('/login');
   };
 
-  // Hàm này chạy khi Modal báo "Cập nhật thành công", giúp UI thay đổi tức thì
   const handleProfileUpdated = (newUser: any) => {
     setUserName(newUser.full_name);
     setUserAvatar(newUser.avatar_url);
@@ -62,11 +57,7 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
           <div style={{ padding: '15px 20px', borderBottom: '1px solid rgba(255,255,255,0.1)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <img 
-                src="/favicon.png" 
-                alt="Logo" 
-                style={{ width: '32px', height: '32px', objectFit: 'contain' }} 
-              />
+              <img src="/favicon.png" alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
               <h2 style={{ color: 'white', fontWeight: 'bold', margin: 0, fontSize: '20px' }}>Instructor</h2>
             </div>
 
@@ -89,6 +80,14 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
               <IonItem button routerLink="/instructor-classes" routerDirection="root" className={`glass-menu-item ${location.pathname.includes('/instructor-classes') ? 'active-menu' : ''}`}>
                 <IonIcon slot="start" icon={bookOutline} />
                 <IonLabel>Lớp học của tôi</IonLabel>
+              </IonItem>
+            </IonMenuToggle>
+
+            {/* ĐÃ THÊM: Menu Quản lý học viên tổng hợp */}
+            <IonMenuToggle autoHide={false}>
+              <IonItem button routerLink="/instructor-all-students" routerDirection="root" className={`glass-menu-item ${location.pathname.includes('/instructor-all-students') ? 'active-menu' : ''}`}>
+                <IonIcon slot="start" icon={peopleOutline} />
+                <IonLabel>Quản lý Học viên</IonLabel>
               </IonItem>
             </IonMenuToggle>
 
@@ -119,37 +118,19 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
             <IonTitle>{pageTitle}</IonTitle>      
             
             <div slot="end" className="header-right-actions">
-              
-              {/* KHU VỰC AVATAR CÓ THỂ CLICK ĐỂ MỞ MODAL */}
-              <div 
-                className="user-profile-badge" 
-                onClick={() => setShowProfileModal(true)} 
-                style={{ cursor: 'pointer' }}
-                title="Cập nhật hồ sơ"
-              >
+              <div className="user-profile-badge" onClick={() => setShowProfileModal(true)} style={{ cursor: 'pointer' }} title="Cập nhật hồ sơ">
                 {userAvatar ? (
-                  <img 
-                    src={userAvatar} 
-                    alt="Avatar" 
-                    style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }} 
-                  />
+                  <img src={userAvatar} alt="Avatar" style={{ width: '26px', height: '26px', borderRadius: '50%', objectFit: 'cover' }} />
                 ) : (
                   <IonIcon icon={personCircleOutline} className="user-avatar" />
                 )}
                 <span className="user-name">{userName}</span>
               </div>
 
-              <IonButton 
-                fill="clear" 
-                color="danger" 
-                onClick={handleLogout} 
-                title="Đăng xuất" 
-                className="btn-logout-icon"
-              >
+              <IonButton fill="clear" color="danger" onClick={handleLogout} title="Đăng xuất" className="btn-logout-icon">
                 <IonIcon slot="icon-only" icon={logOutOutline} />
               </IonButton>
             </div>
-            
           </IonToolbar>
         </IonHeader>
 
@@ -158,11 +139,7 @@ const InstructorLayout: React.FC<InstructorLayoutProps> = ({ children, pageTitle
         </IonContent>
       </IonPage>
 
-      <UserProfileModal 
-        isOpen={showProfileModal} 
-        onClose={() => setShowProfileModal(false)} 
-        onProfileUpdated={handleProfileUpdated} 
-      />
+      <UserProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} onProfileUpdated={handleProfileUpdated} />
 
     </IonSplitPane>
   );

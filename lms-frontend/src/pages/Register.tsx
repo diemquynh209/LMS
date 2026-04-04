@@ -8,12 +8,14 @@ import { useHistory } from 'react-router-dom';
 
 const Register: React.FC = () => {
   const [fullName, setFullName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [email, setEmail] = useState('');
-  const [phone,setPhone] = useState('')
+  const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [inviteCode, setInviteCode] = useState('');
   const [toastMsg, setToastMsg] = useState('');
   const history = useHistory();
+  const [dateInputType, setDateInputType] = useState<'text' | 'date'>('text');
 
   const handleRegister = async () => {
     try {
@@ -22,8 +24,9 @@ const Register: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           full_name: fullName, 
+          date_of_birth: dateOfBirth,
           email: email,
-          phone:phone,
+          phone: phone,
           password: password, 
           invite_code: inviteCode 
         })
@@ -33,12 +36,13 @@ const Register: React.FC = () => {
         setToastMsg(' Đăng ký thành công! Đang chuyển sang Đăng nhập...');
         setTimeout(() => history.push('/login'), 2000);
       } else {
-        setToastMsg + (data.message || 'Lỗi đăng ký');
+        setToastMsg(data.message || 'Lỗi đăng ký');
       }
     } catch (error) {
       setToastMsg(' Không thể kết nối đến máy chủ Backend!');
     }
   };
+
   return (
     <IonPage>
       <IonContent className="bg-gradient-blue">
@@ -50,19 +54,27 @@ const Register: React.FC = () => {
           <IonCardContent>
             <IonItem className="glass-input-item" lines="none">
               <IonInput placeholder="Họ và tên" value={fullName} onIonChange={e => setFullName(e.detail.value!)}></IonInput>
-            
             </IonItem>
+
+            <IonItem className="glass-input-item input-spacing" lines="none" style={{ marginTop: '10px' }}>
+              <IonInput 
+                type={dateInputType} 
+                placeholder="Ngày sinh" 
+                value={dateOfBirth} 
+                onIonFocus={() => setDateInputType('date')}
+                onIonBlur={() => {
+                  if (!dateOfBirth) setDateInputType('text');
+                }}
+                onIonChange={e => setDateOfBirth(e.detail.value!)}>
+              </IonInput>
+            </IonItem>
+
             <IonItem className="glass-input-item" lines="none">
               <IonInput type="email" placeholder="Email address" value={email} onIonChange={e => setEmail(e.detail.value!)}></IonInput>
             </IonItem>
             
             <IonItem className="glass-input-item input-spacing" lines="none">
-              <IonInput 
-                type="tel" 
-                placeholder="Số điện thoại" 
-                value={phone} 
-                onIonChange={e => setPhone(e.detail.value!)}>
-              </IonInput>
+              <IonInput type="tel" placeholder="Số điện thoại" value={phone} onIonChange={e => setPhone(e.detail.value!)}></IonInput>
             </IonItem>
             
             <IonItem className="glass-input-item" lines="none">
@@ -85,7 +97,6 @@ const Register: React.FC = () => {
             </div>
           </IonCardContent>
         </IonCard>
-
         <IonToast isOpen={!!toastMsg} message={toastMsg} duration={2500} onDidDismiss={() => setToastMsg('')} color="dark"/>
       </IonContent>
     </IonPage>

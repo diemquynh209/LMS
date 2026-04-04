@@ -5,9 +5,9 @@ const InviteModel = require('../models/inviteModel');
 
 const authController = {
     registerUser: async (req, res) => {
-        const { full_name, email, phone, password, invite_code } = req.body;
+        const { full_name, date_of_birth, email, phone, password, invite_code } = req.body;
         
-        if (!full_name || !email || !phone || !password) {
+        if (!full_name || !date_of_birth || !email || !phone || !password) {
             return res.status(400).json({ message: "Vui lòng không để trống" });
         }
         
@@ -30,7 +30,7 @@ const authController = {
             // Hash password
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            await UserModel.createUser(full_name, email, phone, hashedPassword, role);
+            await UserModel.createUser(full_name, date_of_birth, email, phone, hashedPassword, role);
             
             // Xóa mã mời đã dùng
             if (role === 'Instructor') {
@@ -58,6 +58,15 @@ const authController = {
             if (!user) {
                 return res.status(400).json({ message: "Email hoặc mật khẩu không đúng" });
             }
+
+            if (user.status === 'Deleted') {
+                return res.status(403).json({ message: "Tài khoản không tồn tại." });
+            }
+            if (user.status === 'Locked') {
+                return res.status(403).json({ message: "Tài khoản của bạn đã bị khóa do vi phạm quy định. Vui lòng liên hệ Quản trị viên." });
+            }
+
+
             const isMatch = await bcrypt.compare(password, user.password_hash);
             if (!isMatch) {
                 return res.status(400).json({ message: "Email hoặc mật khẩu không đúng" });
@@ -76,11 +85,13 @@ const authController = {
                 token: token,
                 user: { 
                     id: user.user_id, 
-                    full_name: user.full_name, 
+                    full_name: user.full_name,
+                    date_of_birth: user.date_of_birth, 
                     email: user.email, 
                     phone: user.phone, 
                     avatar_url: user.avatar_url,
-                    role: user.role 
+                    role: user.role,
+                    status: user.status 
                 }
             });
         } catch (error) {

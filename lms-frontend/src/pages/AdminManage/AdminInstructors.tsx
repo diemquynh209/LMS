@@ -1,7 +1,7 @@
 import React from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { IonButton, IonIcon, IonInput, IonSpinner, IonToast } from '@ionic/react';
-import { sendOutline, trashOutline, arrowDownCircleOutline, searchOutline } from 'ionicons/icons';
+import { sendOutline, arrowDownCircleOutline, searchOutline, lockClosedOutline, lockOpenOutline } from 'ionicons/icons';
 import { useAdminInstructors } from '../../hooks/admin/useAdminInstructors';
 import Pagination from '../../components/shared/Pagination';
 import '../../theme/pages/AdminPages.css';
@@ -9,7 +9,7 @@ import '../../theme/pages/AdminPages.css';
 const AdminInstructors: React.FC = () => {
   const {
     email, setEmail, toastMsg, setToastMsg, isLoading, fetchInstructors,
-    handleSendInvite, handleRoleChange, handleDeleteUser,
+    handleSendInvite, handleRoleChange, handleToggleStatus, // Gọi hàm mới
     currentInstructors, currentPage, setCurrentPage, totalPages
   } = useAdminInstructors();
 
@@ -44,7 +44,7 @@ const AdminInstructors: React.FC = () => {
                 <th>Lớp học phụ trách</th>
                 <th>Email</th>
                 <th>Số điện thoại</th>
-                <th>Trạng thái</th>
+                <th style={{ textAlign: 'center' }}>Trạng thái</th>
                 <th style={{ textAlign: 'center' }}>Hành động</th>
               </tr>
             </thead>
@@ -70,15 +70,34 @@ const AdminInstructors: React.FC = () => {
 
                   <td>{ins.email}</td>
                   <td>{ins.phone || 'Chưa cập nhật'}</td>
-                  <td><span className="badge-active">Hoạt động</span></td>
+                  
+                  {/* HIỂN THỊ TRẠNG THÁI */}
+                  <td style={{ textAlign: 'center' }}>
+                    <span className="badge-active" style={{ 
+                        background: ins.status === 'Active' ? '#e8f5e9' : '#ffebee', 
+                        color: ins.status === 'Active' ? '#2e7d32' : '#c62828',
+                        padding: '6px 12px', borderRadius: '12px', fontWeight: 'bold', fontSize: '13px'
+                    }}>
+                      {ins.status === 'Active' ? 'Hoạt động' : 'Bị Khóa'}
+                    </span>
+                  </td>
+
                   <td>
                     <div className="action-td-container">
                       <IonButton className="action-btn" color="warning" fill="clear" onClick={() => handleRoleChange(ins.user_id, ins.full_name, 'Student')} title="Giáng cấp">
                         <IonIcon slot="icon-only" icon={arrowDownCircleOutline} />
                       </IonButton>
-                      <IonButton className="action-btn" color="danger" fill="clear" onClick={() => handleDeleteUser(ins.user_id, ins.full_name)} title="Xóa">
-                        <IonIcon slot="icon-only" icon={trashOutline} />
-                      </IonButton>
+                      
+                      {/* NÚT KHÓA / MỞ KHÓA TÀI KHOẢN */}
+                      {ins.status === 'Active' ? (
+                        <IonButton className="action-btn" color="danger" fill="clear" onClick={() => handleToggleStatus(ins.user_id, ins.full_name, ins.status)} title="Khóa tài khoản">
+                          <IonIcon slot="icon-only" icon={lockClosedOutline} />
+                        </IonButton>
+                      ) : (
+                        <IonButton className="action-btn" color="success" fill="clear" onClick={() => handleToggleStatus(ins.user_id, ins.full_name, ins.status)} title="Mở khóa tài khoản">
+                          <IonIcon slot="icon-only" icon={lockOpenOutline} />
+                        </IonButton>
+                      )}
                     </div>
                   </td>
                 </tr>

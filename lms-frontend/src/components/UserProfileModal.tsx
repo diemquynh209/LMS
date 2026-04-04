@@ -8,13 +8,14 @@ import { cameraOutline, saveOutline, closeOutline, personCircleOutline } from 'i
 interface UserProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onProfileUpdated: (newUser: any) => void; // Bắn sự kiện ra ngoài để Cập nhật Header
+  onProfileUpdated: (newUser: any) => void; 
 }
 
 const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, onProfileUpdated }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [fullName, setFullName] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState(''); // Thêm state Ngày sinh
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
@@ -34,6 +35,12 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
         setEmail(userObj.email || '');
         setPhone(userObj.phone || '');
         setAvatarUrl(userObj.avatar_url || '');
+        
+        if (userObj.date_of_birth) {
+            setDateOfBirth(new Date(userObj.date_of_birth).toISOString().split('T')[0]);
+        } else {
+            setDateOfBirth('');
+        }
       }
       setAvatarFile(null);
       setPreviewUrl('');
@@ -44,13 +51,13 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
     const file = e.target.files?.[0];
     if (file) {
       setAvatarFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Hiện ảnh xem trước
+      setPreviewUrl(URL.createObjectURL(file)); 
     }
   };
 
   const handleSave = async () => {
     if (!fullName.trim() || !email.trim() || !phone.trim()) {
-      setToastMsg('Vui lòng điền đủ thông tin!');
+      setToastMsg('Vui lòng điền đủ thông tin bắt buộc!');
       return;
     }
 
@@ -59,6 +66,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
       const storedToken = localStorage.getItem('token');
       const formData = new FormData();
       formData.append('full_name', fullName);
+      formData.append('date_of_birth', dateOfBirth); // Đẩy ngày sinh vào FormData
       formData.append('email', email);
       formData.append('phone', phone);
       if (avatarFile) {
@@ -78,7 +86,6 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
         setToastMsg('Cập nhật hồ sơ thành công!');
         // Cập nhật lại localStorage
         localStorage.setItem('user', JSON.stringify(data.user));
-        // Báo cho component cha (Layout) biết để đổi Tên/Ảnh trên góc
         onProfileUpdated(data.user);
         setTimeout(onClose, 1000);
       } else {
@@ -109,7 +116,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
             <div style={{ position: 'relative', display: 'inline-block' }}>
               <IonAvatar style={{ width: '100px', height: '100px', margin: '0 auto', border: '3px solid #3880ff' }}>
                 {previewUrl || avatarUrl ? (
-                  <img src={previewUrl || avatarUrl} alt="Avatar" />
+                  <img src={previewUrl || avatarUrl} alt="Avatar" style={{objectFit: 'cover'}} />
                 ) : (
                   <IonIcon icon={personCircleOutline} style={{ fontSize: '100px', color: '#ccc', margin: '-5px' }} />
                 )}
@@ -129,6 +136,12 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ isOpen, onClose, on
           <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
             <IonLabel position="stacked">Họ và tên <span style={{color:'red'}}>*</span></IonLabel>
             <IonInput value={fullName} onIonInput={e => setFullName(e.detail.value!)} placeholder="Nhập họ tên đầy đủ..." />
+          </IonItem>
+
+          {/* Form nhập Ngày sinh  */}
+          <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>
+            <IonLabel position="stacked">Ngày sinh</IonLabel>
+            <IonInput type="date" value={dateOfBirth} onIonChange={e => setDateOfBirth(e.detail.value!)} />
           </IonItem>
 
           <IonItem style={{ marginBottom: '15px', border: '1px solid #ddd', borderRadius: '8px' }}>

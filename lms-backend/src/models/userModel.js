@@ -2,23 +2,29 @@ const pool = require('../config/db');
 
 const UserModel = {
     findUserByEmail: async (email) => {
-        const [rows] = await pool.query('SELECT * FROM Users WHERE email = ?', [email]);
+        //ép kiểu chuỗi cho date_of_birth để chống lệch múi giờ
+        const [rows] = await pool.query(
+            "SELECT *, DATE_FORMAT(date_of_birth, '%Y-%m-%d') AS date_of_birth FROM Users WHERE email = ?", 
+            [email]
+        );
         return rows[0];
     },
 
-    createUser: async (fullName, email, phone, hashedPassword, role) => {
+    createUser: async (fullName, dateOfBirth, email, phone, hashedPassword, role) => {
         const [result] = await pool.query(
-            'INSERT INTO Users(full_name, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?)',
-            [fullName, email, phone, hashedPassword, role]
+            'INSERT INTO Users(full_name, date_of_birth, email, phone, password_hash, role) VALUES (?, ?, ?, ?, ?, ?)',
+            [fullName, dateOfBirth || null, email, phone, hashedPassword, role]
         );
         return result;
     },
 
     getInstructors: async (searchTerm = '') => {
         let query = `
-            SELECT u.*, GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
+            SELECT u.*, 
+                   DATE_FORMAT(u.date_of_birth, '%Y-%m-%d') AS date_of_birth,
+                   GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
             FROM Users u 
-            LEFT JOIN Classes c ON u.user_id = c.instructor_id 
+            LEFT JOIN Classes c ON u.user_id = c.instructor_id AND c.status != 'Deleted'
             WHERE u.role = 'Instructor'
         `;
         let params = [];
@@ -36,23 +42,24 @@ const UserModel = {
 
     updateUserRole: async (userId, newRole) => {
         const [result] = await pool.query('UPDATE Users SET role = ? WHERE user_id = ?', [newRole, userId]);
+        
         if (newRole === 'Student') {
-            await pool.query('DELETE FROM Classes WHERE instructor_id = ?', [userId]);
+            await pool.query(
+                "UPDATE Classes SET status = 'Closed' WHERE instructor_id = ? AND status != 'Deleted'", 
+                [userId]
+            );
         }
-        return result;
-    },
-
-    deleteUser: async (userId) => {
-        const [result] = await pool.query('DELETE FROM Users WHERE user_id = ?', [userId]);
         return result;
     },
 
     getStudents: async (searchTerm = '') => {
         let query = `
-            SELECT u.*, GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
+            SELECT u.*, 
+                   DATE_FORMAT(u.date_of_birth, '%Y-%m-%d') AS date_of_birth,
+                   GROUP_CONCAT(c.class_name SEPARATOR ', ') AS classes 
             FROM Users u 
             LEFT JOIN Enrollments e ON u.user_id = e.student_id 
-            LEFT JOIN Classes c ON e.class_id = c.class_id 
+            LEFT JOIN Classes c ON e.class_id = c.class_id AND c.status != 'Deleted'
             WHERE u.role = 'Student'
         `;
         let params = [];
@@ -74,11 +81,10 @@ const UserModel = {
         return rows;
     },
 
-    updateProfile: async (userId, fullName, email, phone, avatarUrl) => {
-        let query = 'UPDATE Users SET full_name = ?, email = ?, phone = ?';
-        let params = [fullName, email, phone];
+    updateProfile: async (userId, fullName, dateOfBirth, email, phone, avatarUrl) => {
+        let query = 'UPDATE Users SET full_name = ?, date_of_birth = ?, email = ?, phone = ?';
+        let params = [fullName, dateOfBirth || null, email, phone];
 
-        // Nếu có upload ảnh mới thì mới update cột avatar_url
         if (avatarUrl) {
             query += ', avatar_url = ?';
             params.push(avatarUrl);
@@ -90,6 +96,14 @@ const UserModel = {
         const [result] = await pool.query(query, params);
         return result;
     },
+
+    updateUserStatus: async (userId, status) => {
+        const [result] = await pool.query(
+            "UPDATE Users SET status = ? WHERE user_id = ?", 
+            [status, userId]
+        );
+        return result;
+    }
 };
 
 module.exports = UserModel;

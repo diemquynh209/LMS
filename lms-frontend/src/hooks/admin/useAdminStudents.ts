@@ -34,7 +34,7 @@ export const useAdminStudents = () => {
   const handleRoleChange = async (userId: number, fullName: string, currentRole: string, newRole: string) => {
     if (currentRole === newRole) return; 
     
-    if (window.confirm(`Nâng cấp học viên "${fullName}" thành Giảng viên? Các khóa học họ đang tham gia sẽ bị hủy bỏ. Bạn đồng ý chứ?`)) {
+    if (window.confirm(`Nâng cấp học viên "${fullName}" thành Giảng viên? Các khóa học họ đang tham gia có thể bị ảnh hưởng. Bạn đồng ý chứ?`)) {
       try {
         const response = await fetch('http://localhost:5000/api/admin/update-role', {
           method: 'PUT', headers: { 'Content-Type': 'application/json' },
@@ -45,17 +45,29 @@ export const useAdminStudents = () => {
     }
   }
 
-  const handleDeleteUser = async (userId: number, fullName: string) => {
-    if (window.confirm(`⚠️ Xóa học viên "${fullName}" sẽ xóa toàn bộ tiến trình học tập của họ. Bạn có chắc chắn?`)) {
+  const handleToggleStatus = async (userId: number, fullName: string, currentStatus: string) => {
+    const newStatus = currentStatus === 'Active' ? 'Locked' : 'Active';
+    const actionText = newStatus === 'Locked' ? 'KHÓA' : 'MỞ KHÓA';
+
+    if (window.confirm(`Bạn có chắc chắn muốn ${actionText} tài khoản của học viên "${fullName}"?`)) {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/delete-user/${userId}`, { method: 'DELETE' });
-        if (response.ok) { setToastMsg('Đã xóa thành công!'); fetchStudents(); }
+        const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/status`, { 
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (response.ok) { 
+          setToastMsg(`Đã ${actionText.toLowerCase()} tài khoản thành công!`); 
+          fetchStudents(); 
+        } else {
+          setToastMsg('Lỗi khi cập nhật trạng thái!');
+        }
       } catch (error) { setToastMsg('Lỗi kết nối!'); }
     }
   };
 
   return {
-    toastMsg, setToastMsg, fetchStudents, handleRoleChange, handleDeleteUser,
+    toastMsg, setToastMsg, fetchStudents, handleRoleChange, handleToggleStatus,
     currentStudents, currentPage, setCurrentPage, totalPages
   };
 };

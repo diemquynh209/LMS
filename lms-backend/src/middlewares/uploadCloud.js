@@ -13,22 +13,28 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
     const fixedOriginalName = Buffer.from(file.originalname, 'latin1').toString('utf8');
-    
-    //upload avt
     if (file.fieldname === 'avatar') {
       const userId = req.user ? req.user.id : 'unknown';
       return {
-        folder: 'lms_avatars',      
+        folder: 'lms_avatars',        
         resource_type: 'image',       
-        public_id: `user_${userId}_${fixedOriginalName}` 
+        public_id: `user_${userId}_${Date.now()}` // Đổi tên file tránh trùng
       };
     }
 
-    //upload tai lieu
+    if (file.fieldname === 'image') {
+      const instructorId = req.body.instructorId || 'unknown';
+      return {
+        folder: 'lms_course_images',  
+        resource_type: 'image',       
+        public_id: `course_${instructorId}_${Date.now()}` 
+      };
+    }
+
     const lessonId = req.params.id || 'unknown';
     return {
-      folder: 'lms_documents', 
-      resource_type: 'raw', 
+      folder: 'lms_documents',
+      resource_type: 'raw',
       public_id: `lesson_${lessonId}_${fixedOriginalName}`
     };
   }

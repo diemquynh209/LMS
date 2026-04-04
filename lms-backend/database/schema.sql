@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS Users (
     phone VARCHAR(20),
     password_hash VARCHAR(255) NOT NULL, 
     role ENUM('Admin', 'Instructor', 'Student') NOT NULL DEFAULT 'Student',
+    status ENUM('Active', 'Locked') DEFAULT 'Active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -20,11 +21,13 @@ CREATE TABLE IF NOT EXISTS Classes (
     instructor_id INT NOT NULL,
     class_name VARCHAR(255) NOT NULL,
     description TEXT,
-    status ENUM('Draft', 'Published', 'Closed') DEFAULT 'Draft',
+    status ENUM('Draft', 'Published', 'Closed','Deleted') DEFAULT 'Draft',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (instructor_id) REFERENCES Users(user_id) ON DELETE CASCADE
 );
+
+ALTER TABLE Classes ADD COLUMN image_url VARCHAR(500) DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS Enrollments (
     enrollment_id INT AUTO_INCREMENT PRIMARY KEY,

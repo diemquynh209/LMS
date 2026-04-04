@@ -8,9 +8,11 @@ export interface StudentItem {
   role: string;
   classes?: string;
   class_id?: number;
+  status?: string;
+  date_of_birth?: string;
 }
 
-export const useInstructorStudents = () => {
+export const useInstructorStudents = (classId?: string) => {
   const [students, setStudents] = useState<StudentItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,31 +22,35 @@ export const useInstructorStudents = () => {
     setError(null);
     try {
       const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      const instructorId = userData.user_id;
+      const instructorId = userData.user_id || userData.id; 
 
       if (!instructorId) {
-        throw new Error("Không tìm thấy thông tin giảng viên.");
+        throw new Error("Không tìm thấy thông tin giảng viên. Vui lòng đăng nhập lại.");
       }
 
-      const response = await fetch(`http://localhost:5000/api/instructor/students?instructorId=${instructorId}`);
+      let url = `http://localhost:5000/api/instructor/students?instructorId=${instructorId}`;
+      if (classId) {
+        url += `&classId=${classId}`; 
+      }
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error("Lỗi khi tải dữ liệu học viên từ máy chủ.");
       }
 
       const data = await response.json();
-      setStudents(data);
+      setStudents(Array.isArray(data) ? data : []);
     } catch (err: any) {
       setError(err.message || "Có lỗi xảy ra khi lấy danh sách học viên.");
       console.error(err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [classId]);
 
-  const kickStudentFromClass = async (classId: number, studentId: number) => {
+  const kickStudentFromClass = async (targetClassId: number, studentId: number) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/instructor/classes/${classId}/students/${studentId}`, {
+      const response = await fetch(`http://localhost:5000/api/instructor/classes/${targetClassId}/students/${studentId}`, {
         method: 'DELETE',
       });
       

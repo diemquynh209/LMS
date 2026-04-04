@@ -5,7 +5,7 @@ import '../../theme/shared/table.css'
 
 interface ClassTableProps {
   classes: any[];
-  role: 'Admin' | 'Instructor'; // Nhận diện ai đang xem bảng
+  role: 'Admin' | 'Instructor'; 
   onUpdateStatus?: (classId: number, status: string) => void;
   onDelete?: (classId: number, className: string) => void;
 }
@@ -41,7 +41,16 @@ const ClassTable: React.FC<ClassTableProps> = ({ classes, role, onUpdateStatus, 
               </td>
 
               <td style={{ textAlign: 'center' }}>
-                {onUpdateStatus ? (
+                {/* Nếu lớp đã bị xóa mềm, chỉ hiển thị dạng thẻ tĩnh màu xám */}
+                {cls.status === 'Deleted' ? (
+                   <span className="badge-active" style={{ 
+                    background: '#f5f5f5', 
+                    color: '#757575',
+                    padding: '6px 12px', borderRadius: '12px', fontWeight: 'bold', fontSize: '13px'
+                  }}>
+                    Deleted
+                  </span>
+                ) : onUpdateStatus ? (
                   <div style={{ 
                     background: cls.status === 'Published' ? '#e8f5e9' : (cls.status === 'Closed' ? '#ffebee' : '#fff3e0'), 
                     borderRadius: '12px', display: 'inline-block', padding: '0px 10px' 
@@ -55,7 +64,7 @@ const ClassTable: React.FC<ClassTableProps> = ({ classes, role, onUpdateStatus, 
                           fontSize: '13px',
                           color: cls.status === 'Published' ? '#2e7d32' : (cls.status === 'Closed' ? '#c62828' : '#e65100')
                         }}
->
+                    >
                       <IonSelectOption value="Draft">Draft</IonSelectOption>
                       <IonSelectOption value="Published">Published</IonSelectOption>
                       <IonSelectOption value="Closed">Closed</IonSelectOption>
@@ -64,7 +73,8 @@ const ClassTable: React.FC<ClassTableProps> = ({ classes, role, onUpdateStatus, 
                 ) : (
                   <span className="badge-active" style={{ 
                     background: cls.status === 'Published' ? '#e8f5e9' : (cls.status === 'Closed' ? '#ffebee' : '#fff3e0'), 
-                    color: cls.status === 'Published' ? '#2e7d32' : (cls.status === 'Closed' ? '#c62828' : '#e65100') 
+                    color: cls.status === 'Published' ? '#2e7d32' : (cls.status === 'Closed' ? '#c62828' : '#e65100'),
+                    padding: '6px 12px', borderRadius: '12px', fontWeight: 'bold', fontSize: '13px'
                   }}>
                     {cls.status || 'Draft'}
                   </span>
@@ -77,9 +87,9 @@ const ClassTable: React.FC<ClassTableProps> = ({ classes, role, onUpdateStatus, 
                     <IonIcon slot="icon-only" icon={eyeOutline} />
                   </IonButton>
                   
-                  {/*Chỉ Admin mới hiện nút xóa */}
-                  {role === 'Admin' && onDelete && (
-                    <IonButton className="action-btn" color="danger" fill="clear" onClick={() => onDelete(cls.class_id, cls.class_name)} title="Xóa lớp học">
+                  {/* Chỉ Admin mới hiện nút xóa, VÀ CHỈ HIỆN KHI TRẠNG THÁI LÀ CLOSED */}
+                  {role === 'Admin' && onDelete && cls.status === 'Closed' && (
+                    <IonButton className="action-btn" color="danger" fill="clear" onClick={() => onDelete(cls.class_id, cls.class_name)} title="Xóa mềm lớp học">
                       <IonIcon slot="icon-only" icon={trashOutline} />
                     </IonButton>
                   )}

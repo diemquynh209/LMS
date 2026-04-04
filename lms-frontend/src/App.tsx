@@ -19,7 +19,8 @@ import AdminNotifications from './pages/AdminManage/AdminNotifications';
 import InstructorClasses from './pages/InstructorManage/InstructorClasses';
 import InstructorStudents from './pages/InstructorManage/InstructorStudents';
 import CourseBuilder from './pages/InstructorManage/CourseBuilder';
-import LessonEditor from './pages/InstructorManage/LessonEditor'
+import LessonEditor from './pages/InstructorManage/LessonEditor';
+import InstructorAllStudents from './pages/InstructorManage/InstructorAllStudents';
 
 import '@ionic/react/css/core.css';
 import '@ionic/react/css/normalize.css';
@@ -86,6 +87,10 @@ const App: React.FC = () => (
 
         <Route exact path="/instructor/students/:id">
           <InstructorStudents />
+        </Route>
+
+        <Route exact path="/instructor-all-students">
+          <InstructorAllStudents/>
         </Route>
 
         <Route exact path="/instructor/course-builder/:id">

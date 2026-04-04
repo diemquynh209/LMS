@@ -27,12 +27,15 @@ const instructorController = {
     createClass: async (req, res) => {
         try {
             const { instructorId, class_name, description, category_id } = req.body;      
+            const imageUrl = req.file ? req.file.path : null; 
+
             if (!instructorId || !class_name) {
                 return res.status(400).json({ message: "Vui lòng nhập đủ Tên lớp và ID Giảng viên!" });
             }
-            await ClassModel.createClass(instructorId, class_name, description, category_id);
+            await ClassModel.createClass(instructorId, class_name, description, category_id, imageUrl);
             res.status(201).json({ message: "Tạo lớp học mới thành công!" });
         } catch (error) {
+            console.error("Lỗi tạo lớp:", error);
             res.status(500).json({ message: "Lỗi server khi tạo lớp học." });
         }
     },
@@ -41,12 +44,43 @@ const instructorController = {
         try {
             const classId = req.params.id;
             const { instructorId, class_name, description, category_id } = req.body;
-            const result = await ClassModel.updateClassInfo(classId, instructorId, class_name, description, category_id);        
+            
+            const imageUrl = req.file ? req.file.path : null; 
+
+            //xóa ảnh cũ trên cloudinary khi cập nhật ảnh mới
+            if (imageUrl) {
+                const [rows] = await pool.query('SELECT image_url FROM Classes WHERE class_id = ? AND instructor_id = ?', [classId, instructorId]);
+                
+                if (rows.length > 0 && rows[0].image_url && rows[0].image_url.includes('cloudinary')) {
+                    try {
+                        const cloudinary = require('cloudinary').v2;
+                        const oldUrl = rows[0].image_url;
+                        
+                        // Cắt chuỗi để lấy public_id của ảnh cũ
+                        const parts = oldUrl.split('/upload/');
+                        if (parts.length > 1) {
+                            const pathString = parts[1].split('/').slice(1).join('/'); 
+                            const publicId = pathString.substring(0, pathString.lastIndexOf('.'));
+                            
+                            // Gọi lệnh xóa của Cloudinary
+                            await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
+                            console.log("Đã dọn dẹp ảnh bìa cũ trên mây:", publicId);
+                        }
+                    } catch (err) {
+                        console.error("Lỗi khi xóa ảnh bìa cũ (Bỏ qua để không chết server):", err);
+                    }
+                }
+            }
+
+            // Tiến hành lưu dữ liệu và link ảnh mới vào Database
+            const result = await ClassModel.updateClassInfo(classId, instructorId, class_name, description, category_id, imageUrl);        
+            
             if (result.affectedRows === 0) {
                 return res.status(403).json({ message: "Bạn không có quyền sửa lớp này hoặc lớp không tồn tại!" });
             }
             res.status(200).json({ message: "Cập nhật thông tin lớp học thành công!" });
         } catch (error) {
+            console.error("Lỗi cập nhật lớp:", error);
             res.status(500).json({ message: "Lỗi server khi cập nhật lớp học." });
         }
     },
@@ -77,7 +111,64 @@ const instructorController = {
         }
     },
 
-    //chapter+lesson
+    deleteClass: async (req, res) => {
+        try {
+            const classId = req.params.id;
+            const [rows] = await pool.query(`
+                SELECT c.status, COUNT(e.student_id) AS student_count
+                FROM Classes c 
+                LEFT JOIN Enrollments e ON c.class_id = e.class_id AND e.status = 'Approved'
+                WHERE c.class_id = ?
+                GROUP BY c.class_id
+            `, [classId]);
+
+            if (rows.length === 0) {
+                return res.status(404).json({ message: "Không tìm thấy lớp học!" });
+            }
+            const classData = rows[0];
+
+            if (classData.status !== 'Draft' || classData.student_count > 0) {
+                return res.status(403).json({ 
+                    message: "Không thể xóa! Chỉ được phép xóa vĩnh viễn các lớp ở trạng thái Bản nháp và chưa có học viên." 
+                });
+            }
+
+            await ClassModel.deleteClass(classId);
+            res.status(200).json({ message: "Đã xóa lớp học vĩnh viễn!" });
+        } catch (error) {
+            console.error("Lỗi xóa lớp:", error);
+            res.status(500).json({ message: "Lỗi server khi xóa lớp học." });
+        }
+    },
+
+    getStudentsInClass: async (req, res) => {
+        try {
+            const classId = req.query.classId; 
+            const instructorId = req.query.instructorId;
+
+            if (!instructorId) {
+                return res.status(400).json({ message: "Thiếu thông tin giảng viên!" });
+            }
+
+            const ClassModel = require('../models/classModel');
+            let students = [];
+
+            if (classId) {
+                //click từ 1 lớp cụ thể
+                students = await ClassModel.getStudentsByClass(classId, instructorId);
+            } else {
+                //click từ menu Sidebar tổng
+                students = await ClassModel.getAllStudentsByInstructor(instructorId);
+            }
+            
+            res.status(200).json(students);
+        } catch (error) {
+            console.error("Lỗi lấy danh sách học sinh:", error);
+            res.status(500).json({ message: "Lỗi server." });
+        }
+    },
+
+    // --- CHAPTER + LESSON MANAGEMENT ---
     getCurriculum: async (req, res) => {
         try {
             const classId = req.params.classId;
@@ -168,24 +259,20 @@ const instructorController = {
     uploadLessonDocument: async (req, res) => {
         try {
             const lessonId = req.params.id;
-            
-            //Kiểm tra xem file đã được up lên Cloudinary chưa
             if (!req.file || !req.file.path) {
                 return res.status(400).json({ message: "Không tìm thấy file tải lên!" });
             }
 
             const newDocumentUrl = req.file.path; 
-
             const [rows] = await pool.query('SELECT * FROM Lessons WHERE lesson_id = ?', [lessonId]);
             if (rows.length === 0) {
                 return res.status(404).json({ message: "Không tìm thấy bài học!" });
             }
             const currentLesson = rows[0];
 
-            //Dọn rác cloudinary
             if (currentLesson.document_url && currentLesson.document_url.includes('cloudinary')) {
                 try {
-                    // Cắt lấy đường dẫn public_id 
+                    const cloudinary = require('cloudinary').v2;
                     const parts = currentLesson.document_url.split('/upload/');
                     if (parts.length > 1) {
                         const pathString = parts[1].split('/').slice(1).join('/'); 
@@ -195,9 +282,7 @@ const instructorController = {
                             publicId = pathString.substring(0, pathString.lastIndexOf('.'));
                             resType = 'image';
                         }
-                        
                         await cloudinary.uploader.destroy(publicId, { resource_type: resType });
-                        console.log("Đã dọn dẹp file cũ trên mây:", publicId);
                     }
                 } catch (err) {
                     console.error("Lỗi khi xóa file cũ (Bỏ qua):", err); 
@@ -215,7 +300,7 @@ const instructorController = {
             await LessonModel.updateAIStatus(lessonId, null, 'processing');
             AIService.generateSummary(lessonId, newDocumentUrl);
             res.status(200).json({ 
-                message: "Tải lên tài liệu thành công! Hệ thống AI đang tự động đọc và tóm tắt tài liệu, vui lòng chờ trong giây lát.", 
+                message: "Tải lên tài liệu thành công! Hệ thống AI đang tự động đọc và tóm tắt.", 
                 document_url: newDocumentUrl 
             });
 
@@ -227,7 +312,6 @@ const instructorController = {
 
     getLesson: async (req, res) => {
         try {
-            const LessonModel = require('../models/lessonModel');
             const lesson = await LessonModel.getLessonById(req.params.id);
             if (!lesson) return res.status(404).json({ message: "Không tìm thấy bài học" });
             res.status(200).json(lesson);
@@ -240,12 +324,8 @@ const instructorController = {
         try {
             const lessonId = req.params.id;
             const { finalSummary } = req.body;
-
             await LessonModel.updateAIStatus(lessonId, finalSummary, 'published');
-
-            res.status(200).json({ 
-                message: "Đã duyệt tóm tắt thành công! Học sinh đã có thể xem nội dung này." 
-            });
+            res.status(200).json({ message: "Đã duyệt tóm tắt thành công!" });
         } catch (error) {
             console.error("Lỗi duyệt bài:", error);
             res.status(500).json({ message: "Lỗi server khi duyệt bài." });
@@ -301,7 +381,7 @@ const instructorController = {
         }
     },
 
-    //Assignment
+    // --- ASSIGNMENT MANAGEMENT ---
     getAssignments: async (req, res) => {
         try {
             const lessonId = req.params.lessonId;
@@ -339,10 +419,10 @@ const instructorController = {
     getSubmissions: async (req, res) => {
         try {
             const assignmentId = req.params.id;
-            const submissions = await SubmissionModel.getSubmissionsForAssignment(assignmentId); // Đã đổi
+            const submissions = await SubmissionModel.getSubmissionsForAssignment(assignmentId);
             res.status(200).json(submissions);
         } catch (error) {
-            res.status(500).json({ message: "Lỗi server khi lấy danh sách bài nộp." });
+            res.status(500).json({ message: "Lỗi server khi lấy bài nộp." });
         }
     },
 
@@ -353,7 +433,7 @@ const instructorController = {
             if (grade === undefined || grade === null) {
                 return res.status(400).json({ message: "Vui lòng nhập điểm số trước khi lưu!" });
             }
-            await SubmissionModel.gradeSubmission(submissionId, grade, feedback); // Đã đổi
+            await SubmissionModel.gradeSubmission(submissionId, grade, feedback);
             res.status(200).json({ message: "Đã chấm điểm & gửi nhận xét thành công!" });
         } catch (error) {
             res.status(500).json({ message: "Lỗi server khi chấm điểm." });

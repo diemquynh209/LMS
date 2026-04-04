@@ -90,6 +90,7 @@
 
 .course-content-pad {
   padding: 15px 15px 5px 15px;
+  position: relative; 
 }
 
 .course-category-text {
@@ -110,6 +111,7 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+  padding-right: 35px; 
 }
 
 .course-stats-container {
@@ -125,6 +127,26 @@
 
 .course-stats-text {
   font-size: 13px;
+}
+
+
+.btn-edit-course {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  --background: transparent;
+  --color: #0277bd; 
+  --border-radius: 50%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  height: 36px;
+  width: 36px;
+  margin: 0;
+  z-index: 10;
+}
+
+.btn-edit-course:hover {
+  --background: rgba(2, 119, 189, 0.1); 
 }
 
 /* --- Các Nút Hành động trong Thẻ --- */
@@ -158,6 +180,7 @@
   --background: rgba(230, 126, 34, 0.15);
 }
 
+/* --- Các CSS cho Modal Form --- */
 .modal-form-item {
   margin-bottom: 15px;
   border: 1px solid #ddd;
@@ -180,4 +203,17 @@
 .modal-btn-flex {
   flex: 1;
   margin: 0;
+}
+
+.image-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.file-name-text {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
 }

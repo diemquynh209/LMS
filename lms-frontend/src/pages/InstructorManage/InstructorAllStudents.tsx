@@ -1,32 +1,22 @@
 import React, { useState, useMemo } from 'react';
 import { IonSpinner, IonButton, IonIcon } from '@ionic/react';
-import { useParams, useLocation } from 'react-router-dom'; 
-import { exitOutline, analyticsOutline } from 'ionicons/icons';
+import { personCircleOutline } from 'ionicons/icons'; 
 import InstructorLayout from '../../components/InstructorLayout';
 import Pagination from '../../components/shared/Pagination'; 
-import BackButton from '../../components/shared/BackButton';
 import { useInstructorStudents } from '../../hooks/instructor/useInstructorStudents';
-import '../../theme/shared/table.css'; 
 import '../../theme/pages/InstructorStudent.css'; 
-
-interface LocationState {
-  className?: string;
-}
+import '../../theme/shared/table.css'; 
 
 const formatDOB = (dob?: string) => {
   if (!dob) return <span style={{ color: '#999', fontStyle: 'italic' }}>Chưa cập nhật</span>;
   return new Date(dob).toLocaleDateString('vi-VN');
 };
 
-const InstructorStudents: React.FC = () => {
-  const { id: classId } = useParams<{ id: string }>();
-  const location = useLocation<LocationState>(); 
-  const { students, loading, error, kickStudentFromClass } = useInstructorStudents(classId);
-
-  const targetClassName = location.state?.className ? ` - ${location.state.className}` : '';
+const InstructorAllStudents: React.FC = () => {
+  const { students, loading, error } = useInstructorStudents(); 
 
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10; 
+  const itemsPerPage = 10;
 
   const totalPages = Math.ceil((students?.length || 0) / itemsPerPage);
 
@@ -36,25 +26,12 @@ const InstructorStudents: React.FC = () => {
     return students?.slice(startIndex, endIndex) || [];
   }, [students, currentPage]);
 
-  const handleKick = async (userId: number, fullName: string) => {
-    if (!classId) return;
-    if (window.confirm(`Bạn có chắc chắn muốn xóa học viên "${fullName}" khỏi lớp này không?`)) {
-      const success = await kickStudentFromClass(parseInt(classId), userId);
-      if (success && currentStudents.length === 1 && currentPage > 1) {
-        setCurrentPage(currentPage - 1);
-      }
-    }
-  };
-
   return (
-    <InstructorLayout pageTitle={`Học viên trong lớp${targetClassName}`}>
+    <InstructorLayout pageTitle="Quản lý Học viên Tổng hợp">
       <div className="ion-padding">
 
-        <div style={{ marginBottom: '15px' }}>
-            <BackButton /> 
-        </div>
-
         {error && <div className="student-error-banner">{error}</div>}
+        
         {loading ? (
           <div className="student-loading-container">
             <IonSpinner name="crescent" color="primary" />
@@ -68,9 +45,8 @@ const InstructorStudents: React.FC = () => {
                   <tr>
                     <th>ID</th>
                     <th>Họ và Tên</th>
-                    <th>Ngày sinh</th>
-                    <th style={{ textAlign: 'center' }}>Tiến độ học</th>
-                    <th style={{ textAlign: 'center' }}>Điểm TB</th>
+                    <th>Ngày sinh</th> {/* <--- THÊM CỘT NGÀY SINH */}
+                    <th>Các lớp đang tham gia</th>
                     <th style={{ textAlign: 'center' }}>Hành động</th>
                   </tr>
                 </thead>
@@ -79,34 +55,42 @@ const InstructorStudents: React.FC = () => {
                     <tr key={st.user_id}>
                       <td>#{st.user_id}</td>
                       <td style={{ fontWeight: 'bold' }}>{st.full_name}</td>
-                      <td>{formatDOB(st.date_of_birth)}</td>
+                      <td>{formatDOB(st.date_of_birth)}</td> {/* <--- HIỂN THỊ NGÀY SINH */}
                       
-                      <td style={{ textAlign: 'center' }}>
-                        <span className="progress-badge">0%</span>
-                      </td>
-                      <td className="score-text" style={{ textAlign: 'center' }}>
-                        Chưa có
+                      <td style={{ maxWidth: '300px' }}>
+                        {st.classes ? (
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                            {st.classes.split(',').map((className: string, index: number) => (
+                              <span key={index} style={{
+                                background: '#e8f5e9', color: '#2e7d32', 
+                                padding: '4px 10px', borderRadius: '12px', 
+                                fontSize: '13px', border: '1px solid #c8e6c9', whiteSpace: 'nowrap'
+                              }}>
+                                {className.trim()}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span style={{ color: '#999', fontStyle: 'italic' }}>Chưa có lớp</span>
+                        )}
                       </td>
 
-                      <td>
-                        <div className="action-td-container">
-                          <IonButton className="action-btn" color="primary" fill="clear" title="Xem chi tiết điểm">
-                            <IonIcon slot="icon-only" icon={analyticsOutline} />
-                          </IonButton>
-                          <IonButton className="action-btn" color="warning" fill="clear" onClick={() => handleKick(st.user_id, st.full_name)} title="Kick khỏi lớp">
-                            <IonIcon slot="icon-only" icon={exitOutline} />
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="action-td-container" style={{ justifyContent: 'center' }}>
+                          <IonButton className="action-btn" color="primary" fill="clear" title="Xem hồ sơ">
+                            <IonIcon slot="icon-only" icon={personCircleOutline} />
                           </IonButton>
                         </div>
                       </td>
                     </tr>
                   ))}
                   {currentStudents?.length === 0 && (
-                    <tr><td colSpan={6} className="empty-table-cell">Lớp chưa có học viên nào.</td></tr>
+                    <tr><td colSpan={5} className="empty-table-cell">Chưa có học viên nào.</td></tr>
                   )}
                 </tbody>
               </table>
             </div>
-
+          
             {totalPages > 1 && (
               <Pagination 
                 currentPage={currentPage} 
@@ -121,4 +105,4 @@ const InstructorStudents: React.FC = () => {
   );
 };
 
-export default InstructorStudents;
+export default InstructorAllStudents;

@@ -5,8 +5,9 @@ import {
   IonModal, IonHeader, IonToolbar, IonTitle, IonItem, IonLabel, IonInput,
   IonReorderGroup, IonReorder, ItemReorderEventDetail
 } from '@ionic/react';
-import { addOutline, createOutline, trashOutline, chevronBackOutline, listOutline, playCircleOutline } from 'ionicons/icons';
+import { addOutline, createOutline, trashOutline, listOutline, playCircleOutline } from 'ionicons/icons';
 import InstructorLayout from '../../components/InstructorLayout';
+import BackButton from '../../components/shared/BackButton';
 import { useCourseBuilder, Chapter } from '../../hooks/instructor/useCourseBuilder';
 import '../../theme/pages/CourseBuilder.css';
 import '../../theme/pages/InstructorClasses.css'; 
@@ -103,9 +104,7 @@ const CourseBuilder: React.FC = () => {
       <div className="builder-container">
         
         <div className="builder-header builder-header-flex">
-          <IonButton fill="clear" color="medium" onClick={() => history.goBack()} style={{ margin: 0 }}>
-            <IonIcon slot="start" icon={chevronBackOutline} /> Quay lại
-          </IonButton>
+          <BackButton />
           
           <IonButton color="primary" onClick={() => openChapModal()}>
             <IonIcon slot="start" icon={addOutline} /> THÊM CHƯƠNG

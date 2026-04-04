@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const pool = require('../config/db');
 const UserModel = require('../models/userModel');
 const ClassModel = require('../models/classModel');
 const LessonModel = require('../models/lessonModel');
@@ -72,13 +73,25 @@ const adminController = {
         }
     },
 
-    removeUser: async (req, res) => {
-        const { id } = req.params;
+    toggleUserStatus: async (req, res) => {
         try {
-            await UserModel.deleteUser(id);
-            res.status(200).json({ message: "Đã xóa tài khoản thành công!" });
+            const userId = req.params.id;
+            const { status } = req.body; // Nhận 'Active' hoặc 'Locked' từ Frontend gửi lên
+            
+            if (!['Active', 'Locked'].includes(status)) {
+                return res.status(400).json({ message: "Trạng thái không hợp lệ." });
+            }
+
+            await UserModel.updateUserStatus(userId, status);
+            
+            const message = status === 'Locked' 
+                ? "Đã khóa tài khoản thành công!" 
+                : "Đã mở khóa tài khoản thành công!";
+                
+            res.status(200).json({ message });
         } catch (error) {
-            res.status(500).json({ message: "Lỗi khi xóa tài khoản." });
+            console.error("Lỗi khi cập nhật trạng thái User:", error);
+            res.status(500).json({ message: "Lỗi server khi cập nhật tài khoản." });
         }
     },
 
@@ -105,7 +118,20 @@ const adminController = {
     deleteClass: async (req, res) => {
         try {
             const classId = req.params.id;
-            await ClassModel.deleteClass(classId);
+            // Kiểm tra trạng thái của lớp trước khi cho phép xóa
+            const [rows] = await pool.query('SELECT status FROM Classes WHERE class_id = ?', [classId]);
+            if (rows.length === 0) {
+                return res.status(404).json({ message: "Không tìm thấy lớp học!" });
+            }
+
+            //Chỉ Admin mới được xóa, và chỉ xóa khi lớp đang 'Closed'
+            if (rows[0].status !== 'Closed') {
+                return res.status(403).json({ 
+                    message: "Từ chối: Bạn chỉ được phép xóa các lớp học đang ở trạng thái 'Closed'!" 
+                });
+            }
+
+            await ClassModel.deleteClass(classId); // Gọi xóa mềm
             res.status(200).json({ message: "Đã xóa lớp học thành công!" });
         } catch (error) {
             res.status(500).json({ message: "Lỗi server khi xóa lớp học." });
@@ -211,12 +237,12 @@ const adminController = {
         }
     },
 
-    updateClassStatus: async (req, res) => {
+updateClassStatus: async (req, res) => {
         try {
             const classId = req.params.id;
             const { status } = req.body;
             
-            if (!['Draft', 'Published', 'Closed'].includes(status)) {
+            if (!['Draft', 'Published', 'Closed', 'Deleted'].includes(status)) {
                 return res.status(400).json({ message: "Trạng thái không hợp lệ." });
             }
             

@@ -10,7 +10,7 @@ import '../../theme/pages/AdminPages.css';
 const AdminStudents: React.FC = () => {
   const {
     toastMsg, setToastMsg, fetchStudents,
-    handleRoleChange, handleDeleteUser,
+    handleRoleChange, handleToggleStatus, // Dùng hàm mới
     currentStudents, currentPage, setCurrentPage, totalPages
   } = useAdminStudents();
 
@@ -27,11 +27,12 @@ const AdminStudents: React.FC = () => {
           </div>
         </div>
       
+        {/* Truyền hàm mới vào Table */}
         <StudentTable 
           students={currentStudents} 
           role="Admin" 
           onRoleChange={handleRoleChange} 
-          onDelete={handleDeleteUser} 
+          onToggleStatus={handleToggleStatus} 
         />
 
         <Pagination 

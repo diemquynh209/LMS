@@ -10,7 +10,7 @@ router.get('/instructors', adminController.getAllInstructors);
 router.post('/invite', adminController.sendInstructorInvite);
 router.get('/students', adminController.getStudents);
 router.put('/update-role', adminController.changeUserRole);
-router.delete('/delete-user/:id', adminController.removeUser);
+router.patch('/users/:id/status', adminController.toggleUserStatus);
 
 //class
 router.get('/classes', adminController.getAllClasses);

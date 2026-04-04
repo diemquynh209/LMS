@@ -45,27 +45,36 @@ export const useAdminInstructors = () => {
   };
 
   const handleRoleChange = async (userId: number, fullName: string, newRole: string) => {
-    if (window.confirm(`Hạ giảng viên "${fullName}" đồng thời sẽ xóa các lớp học của họ. Bạn có đồng ý?`)) {
+    if (window.confirm(`Hạ giảng viên "${fullName}" đồng thời sẽ đóng các lớp học của họ. Bạn có đồng ý?`)) {
       try {
         const response = await fetch('http://localhost:5000/api/admin/update-role', {
           method: 'PUT', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId, newRole })
         });
         if (response.ok) { 
-          setToastMsg('Hạ cấp và xóa lớp học thành công!'); 
+          setToastMsg('Hạ cấp thành công!'); 
           fetchInstructors(); 
         }
       } catch (error) { setToastMsg('Lỗi kết nối'); }
     }
   };
   
-  const handleDeleteUser = async (userId: number, fullName: string) => { 
-    if (window.confirm(`Xóa giảng viên "${fullName}" sẽ xóa các lớp học của họ. Bạn có đồng ý?`)) {
+  const handleToggleStatus = async (userId: number, fullName: string, currentStatus: string) => { 
+    const newStatus = currentStatus === 'Active' ? 'Locked' : 'Active';
+    const actionText = newStatus === 'Locked' ? 'KHÓA' : 'MỞ KHÓA';
+
+    if (window.confirm(`Bạn có chắc chắn muốn ${actionText} tài khoản của giảng viên "${fullName}"?`)) {
       try {
-        const response = await fetch(`http://localhost:5000/api/admin/delete-user/${userId}`, { method: 'DELETE' });
+        const response = await fetch(`http://localhost:5000/api/admin/users/${userId}/status`, { 
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
         if (response.ok) { 
-          setToastMsg('Đã xóa giảng viên và lớp học!'); 
+          setToastMsg(`Đã ${actionText.toLowerCase()} tài khoản thành công!`); 
           fetchInstructors(); 
+        } else {
+          setToastMsg('Lỗi khi cập nhật trạng thái!');
         }
       } catch (error) { setToastMsg('Lỗi kết nối'); }
     }
@@ -73,7 +82,7 @@ export const useAdminInstructors = () => {
 
   return {
     email, setEmail, toastMsg, setToastMsg, isLoading,
-    fetchInstructors, handleSendInvite, handleRoleChange, handleDeleteUser,
+    fetchInstructors, handleSendInvite, handleRoleChange, handleToggleStatus,
     currentInstructors, currentPage, setCurrentPage, totalPages
   };
 };
